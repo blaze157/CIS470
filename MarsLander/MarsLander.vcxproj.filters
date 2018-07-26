@@ -13,6 +13,12 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Headers\Simulator">
+      <UniqueIdentifier>{e64c7d2f-89bb-4727-82a0-59aea36c652c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Simulator">
+      <UniqueIdentifier>{cc2053b1-163d-4a05-b084-4a9544e0ad2e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -26,6 +32,12 @@
     </ClInclude>
     <ClInclude Include="Form1.h">
       <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Simulation.h">
+      <Filter>Headers\Simulator</Filter>
+    </ClInclude>
+    <ClInclude Include="Lander.h">
+      <Filter>Headers\Simulator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -45,6 +57,12 @@
     </ClCompile>
     <ClCompile Include="Form1.cpp">
       <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Simulation.cpp">
+      <Filter>Sources\Simulator</Filter>
+    </ClCompile>
+    <ClCompile Include="Lander.cpp">
+      <Filter>Sources\Simulator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

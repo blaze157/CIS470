@@ -150,6 +150,7 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Lander.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Simulation.h" />
     <ClInclude Include="stdafx.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="CppCLR_WinformsProjekt.cpp" />
     <ClCompile Include="Form1.cpp" />
     <ClCompile Include="Lander.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

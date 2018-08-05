@@ -42,6 +42,9 @@
     <ClInclude Include="Node.h">
       <Filter>Headers\Simulator</Filter>
     </ClInclude>
+    <ClInclude Include="SQLConnect.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
@@ -69,6 +72,9 @@
     </ClCompile>
     <ClCompile Include="Node.cpp">
       <Filter>Sources\Simulator</Filter>
+    </ClCompile>
+    <ClCompile Include="SQLConnect.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

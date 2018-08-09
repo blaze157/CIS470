@@ -11,8 +11,14 @@ class Simulation
 private:
 	Lander *lander;
 public:
-	Simulation();
+	Simulation(double startX, double startY, double startZ, double startP, double startQ, double startR, double startVelocity, double startVerticalVelocity);
 	~Simulation();
+
+	double getXpos();
+	double getYpos();
+	double getZpos();
+
+	double getVelocity();
 
 	void update();
 };

@@ -13,7 +13,7 @@ Lander::Lander()
 	nodes.push_back(new Node(-7, 0, 0, 1));//2
 	nodes.push_back(new Node(-3.5, 0, 6.0622, 1));//3
 	nodes.push_back(new Node(3.5, 0, 6.0622, 1));//4
-	nodes.push_back(new Node(-7, 0, 0, 1));//5
+	nodes.push_back(new Node(7, 0, 0, 1));//5
 	nodes.push_back(new Node(3.5, 0, -6.0622, 1));//6
 	nodes.push_back(new Node(-3.5, 0, -6.0622, 1));//7
 
@@ -23,7 +23,7 @@ Lander::Lander()
 	nodes.push_back(new Node(2.45, 2.8, 4.2435, 1));//10
 	nodes.push_back(new Node(4.9, 2.8, 0, 1));//11
 	nodes.push_back(new Node(2.45, 2.8, -4.2435, 1));//12
-	nodes.push_back(new Node(2.45, 2.8, -4.2435, 1));//13
+	nodes.push_back(new Node(-2.45, 2.8, -4.2435, 1));//13
 
 	//feet
 	nodes.push_back(new Node(-2.45, -3.5, -1.4073, 1));//14
@@ -31,9 +31,9 @@ Lander::Lander()
 	nodes.push_back(new Node(0, -3.5, 2.8363, 1));//16
 
 	//bottom thrusters
-	nodes.push_back(new Node(-2.45, 0, 1.4073, 1));//17
-	nodes.push_back(new Node(0, 0, -2.8363, 1));//18
-	nodes.push_back(new Node(2.45, 0, 1.4073, 1));//19
+	nodes.push_back(new Node(-2.45, 0, -1.4073, 1));//17
+	nodes.push_back(new Node(0, 0, 2.8363, 1));//18
+	nodes.push_back(new Node(2.45, 0, -1.4073, 1));//19
 
 	//rotation thrusters
 	nodes.push_back(new Node(-4.7358, 1.4, -2.7605, 1));//20
@@ -122,6 +122,25 @@ Lander::~Lander()
 	nodes.clear();
 }
 
+void Lander::move(double x, double y, double z)
+{
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		nodes[i]->move(x,y,z);
+	}
+}
+void Lander::tilt(double p, double q, double r)
+{
+	;
+}
+void Lander::setVelocity(double xvel, double yvel, double zvel)
+{
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		nodes[i]->setVeloctiy(xvel, yvel, zvel);
+	}
+}
+
 void Lander::sendData()
 {
 	//upload sensor data to the server
@@ -170,10 +189,22 @@ double Lander::getAltitude()
 	return 0;
 }
 
+void Lander::flightController()
+{
+	if (getYpos() <= 1000)
+	{
+		nodes[17]->force(0, 1, 0);
+		nodes[18]->force(0, 1, 0);
+		nodes[19]->force(0, 1, 0);
+	}
+}
+
 void Lander::update()
 {
 	for (int i = 0; i < nodes.size(); i++)
 	{
+		nodes[i]->gravity(13170000000000000000000000.0);
+		nodes[i]->restrain();
 		nodes[i]->update();
 	}
 }

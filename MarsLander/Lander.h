@@ -18,6 +18,11 @@ public:
 	Lander();
 	~Lander();
 
+	//These changes proproties ignoring physics
+	void move(double x, double y, double z);
+	void tilt(double p, double q, double r);
+	void setVelocity(double xvel, double yvel, double zvel);
+
 	double getPangle();
 	double getQangle();
 	double getRangle();
@@ -28,6 +33,8 @@ public:
 
 	double getVelocity();
 	double getAltitude();
+	
+	void flightController();
 
 	void update();
 };

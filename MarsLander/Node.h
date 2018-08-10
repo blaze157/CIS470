@@ -6,6 +6,7 @@ class Node
 {
 private:
 	double x, y, z;
+	//All velocities are in feet/ms
 	double xvel, yvel, zvel;
 	double mass;
 
@@ -22,7 +23,7 @@ public:
 	void connect(Node* to);
 
 	void force(double xForce, double yForce, double zForce);
-	void gravity(double planetMass);
+	void gravity();
 	
 	void restrain();//Move nodes to where they should be
 	void update();//advance node one tick

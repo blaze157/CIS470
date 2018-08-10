@@ -5,15 +5,21 @@ sensor data, and runs the logic for the Guidance Control
 #pragma once
 
 #include <vector>
+#include <string>
 #include "Node.h"
+#include "SQLConnect.h"
 
 class Lander
 {
 private:
 	std::vector<Node*> nodes;
 
-	void correctAngle();
+	SQLConnector* connector;
+
 	void sendData();
+
+	//Fire bottom thrusters 17 18 and 19
+	void fireThruster(int number, double force);
 public:
 	Lander();
 	~Lander();

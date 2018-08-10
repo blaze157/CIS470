@@ -14,6 +14,10 @@ public:
 	Simulation(double startX, double startY, double startZ, double startP, double startQ, double startR, double startVelocity, double startVerticalVelocity);
 	~Simulation();
 
+	double getPangle();
+	double getQangle();
+	double getRangle();
+
 	double getXpos();
 	double getYpos();
 	double getZpos();

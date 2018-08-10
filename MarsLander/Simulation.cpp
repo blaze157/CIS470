@@ -20,6 +20,19 @@ void Simulation::update()
 	lander->update();
 }
 
+double Simulation::getPangle()
+{
+	return lander->getPangle();
+}
+double Simulation::getQangle()
+{
+	return lander->getQangle();
+}
+double Simulation::getRangle()
+{
+	return lander->getRangle();
+}
+
 double Simulation::getXpos()
 {
 	return lander->getXpos();

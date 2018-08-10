@@ -3,8 +3,6 @@
 
 #include <cmath>
 
-#include <iostream>
-
 double square(double num)
 {
 	return num*num;
@@ -55,19 +53,23 @@ void Node::connect(Node* to)
 
 void Node::force(double xForce, double yForce, double zForce)
 {
-	xvel += xForce / mass;
-	yvel += yForce / mass;
-	zvel += zForce / mass;
+	double poundsForce = 32.1740486;//convert pounds force to pounds mass
+	xvel += xForce * poundsForce / mass / 1000 / 1000;//1000 for sec to ms
+	yvel += yForce * poundsForce / mass / 1000 / 1000;
+	zvel += zForce * poundsForce / mass / 1000 / 1000;
 }
-void Node::gravity(double planetMass)
+void Node::gravity()
 {
-	//12.1 feet/sec/sec
-	//divided by 1000 for ms
-	force(0, -12.1/1000, 0);
+	//12.1 feet/sec/sec on mars
+	yvel -= 12.1 / 1000 / 1000;
 }
 
 void Node::restrain()//Move nodes to where they should be
 {
+	//strength of node connection
+	//low for squishy
+	//high for ridgid but twitchy
+	const double scale = 1000;
 	for (int i = 0; i<connections.size(); i++)
 	{
 		if (connections[i])
@@ -82,35 +84,27 @@ void Node::restrain()//Move nodes to where they should be
 
 			double distance = sqrt(square(relativeX) + square(relativeY) + square(relativeZ));
 			double nextDist = sqrt(square(relativeX + relativeXvel) + square(relativeY + relativeYvel) + square(relativeZ + relativeZvel));
-
-			//std::cout << i << " expected: " << distances[i] << " actual: " << distance << std::endl;
-			if (abs(distances[i] - distance) > 5)
-			{
-				std::cout << i << " expected: " << distances[i] << " actual: " << distance << std::endl;
-			}
-
 			double relativeVel = nextDist - distance;
 
-			//apply force equal to half of the extra distance
-			double xForce = relativeX*(1-(distances[i] / distance)) / 10;
-			double yForce = relativeY*(1-(distances[i] / distance)) / 10;
-			double zFroce = relativeZ*(1-(distances[i] / distance)) / 10;
+			//apply force proportional to the extra distance
+			double xForce = (relativeX / distance) * (distance - distances[i]) * scale;
+			double yForce = (relativeY / distance) * (distance - distances[i]) * scale;
+			double zForce = (relativeZ / distance) * (distance - distances[i]) * scale;
 
-			//The ifs allow the particles to only restrain when actively moving in the wrong direction
+			//The ifs allow the nodes to only restrain when actively moving in the wrong direction
 			//It prevents the particles from vibrating back and forth
 			if (distance>distances[i] && relativeVel>0)
 			{
-				force(xForce, yForce, zFroce);
-				connections[i]->force(-xForce, -yForce, -zFroce);
+				force(xForce, yForce, zForce);
+				connections[i]->force(-xForce, -yForce, -zForce);
 			}
 			if (distance<distances[i] && relativeVel<0)
 			{
-				force(xForce, yForce, zFroce);
-				connections[i]->force(-xForce, -yForce, -zFroce);
+				force(xForce, yForce, zForce);
+				connections[i]->force(-xForce, -yForce, -zForce);
 			}
 		}
 	}
-	std::cout << std::endl;
 }
 void Node::update()//advance node one tick
 {

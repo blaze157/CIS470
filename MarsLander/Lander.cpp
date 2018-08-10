@@ -2,6 +2,7 @@
 #include "Lander.h"
 
 
+
 Lander::Lander()
 {
 	//center
@@ -45,11 +46,15 @@ Lander::Lander()
 	nodes[0]->connect(nodes[1]);
 
 	//top to top sides
-	for(int i = 2; i <= 7; i++)
+	for(int i = 8; i <= 13; i++)
 		nodes[0]->connect(nodes[i]);
 
 	//center to sides
-	for (int i = 8; i <= 13; i++)
+	for (int i = 2; i <= 7; i++)
+		nodes[0]->connect(nodes[i]);
+
+	//top to sides
+	for (int i = 2; i <= 7; i++)
 		nodes[0]->connect(nodes[i]);
 
 	//sides to top sides
@@ -110,6 +115,8 @@ Lander::Lander()
 	nodes[22]->connect(nodes[6]);
 	nodes[22]->connect(nodes[11]);
 	nodes[22]->connect(nodes[12]);
+
+	//connector = new SQLConnector(L"cis470.c7yjsuncshex.us-east-1.rds.amazonaws.com", L"MarsLander", L"12345678");
 }
 
 
@@ -120,6 +127,8 @@ Lander::~Lander()
 		delete nodes[i];
 	}
 	nodes.clear();
+
+	delete connector;
 }
 
 void Lander::move(double x, double y, double z)
@@ -143,7 +152,7 @@ void Lander::setVelocity(double xvel, double yvel, double zvel)
 
 void Lander::sendData()
 {
-	//upload sensor data to the server
+	connector->execute(L"some sql code");
 }
 
 double Lander::getPangle()
@@ -154,15 +163,19 @@ double Lander::getPangle()
 }
 double Lander::getQangle()
 {
-	//get angle in Q demention (see diagram in files)
-	//should measure angle between Nodes[0] and Nodes[1]
-	return 0;
+	double relativeZ, relativeY;
+	relativeZ = nodes[1]->getZ() - nodes[0]->getZ();
+	relativeY = nodes[1]->getY() - nodes[0]->getY();
+	
+	return atan2(relativeY, relativeZ);
 }
 double Lander::getRangle()
 {
-	//get angle in R demention (see diagram in files)
-	//should measure angle between Nodes[0] and Nodes[1]
-	return 0;
+	double relativeX, relativeY;
+	relativeX = nodes[1]->getX() - nodes[0]->getX();
+	relativeY = nodes[1]->getY() - nodes[0]->getY();
+
+	return atan2(relativeY, relativeX);
 }
 
 double Lander::getXpos()
@@ -189,22 +202,45 @@ double Lander::getAltitude()
 	return 0;
 }
 
+void Lander::fireThruster(int number, double force)
+{
+	if (number >= 17 && number <= 19)
+	{
+		//get normalized vector from center to top
+		//basicly a vector pointing up relative to the lander
+		double xvect, yvect, zvect;
+		xvect = (nodes[1]->getX() - nodes[0]->getX()) / 2.8;
+		yvect = (nodes[1]->getY() - nodes[0]->getY()) / 2.8;
+		zvect = (nodes[1]->getZ() - nodes[0]->getZ()) / 2.8;
+
+		//apply force along vector
+		nodes[number]->force(force*xvect, force*yvect, force*zvect);
+	}
+}
 void Lander::flightController()
 {
-	if (getYpos() <= 1000)
+	//if (getYpos() < 1000)
 	{
-		nodes[17]->force(0, 1, 0);
-		nodes[18]->force(0, 1, 0);
-		nodes[19]->force(0, 1, 0);
+		fireThruster(17, 23 / 3.0);
+		fireThruster(18, 23 / 3.0);
+		fireThruster(19, 23 / 3.0);
 	}
+
+	//sendData();
 }
 
 void Lander::update()
 {
 	for (int i = 0; i < nodes.size(); i++)
 	{
-		nodes[i]->gravity(13170000000000000000000000.0);
+		//nodes[i]->gravity();
+	}
+	for (int i = 0; i < nodes.size(); i++)
+	{
 		nodes[i]->restrain();
+	}
+	for (int i = 0; i < nodes.size(); i++)
+	{
 		nodes[i]->update();
 	}
 }

@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\MarsLander\Lander.h" />
+    <ClInclude Include="..\MarsLander\math.h" />
     <ClInclude Include="..\MarsLander\Node.h" />
     <ClInclude Include="..\MarsLander\Simulation.h" />
     <ClInclude Include="..\MarsLander\SQLConnect.h" />
@@ -152,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\MarsLander\Lander.cpp" />
+    <ClCompile Include="..\MarsLander\math.cpp" />
     <ClCompile Include="..\MarsLander\Node.cpp" />
     <ClCompile Include="..\MarsLander\Simulation.cpp" />
     <ClCompile Include="..\MarsLander\SQLConnect.cpp" />

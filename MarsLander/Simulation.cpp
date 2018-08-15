@@ -50,3 +50,8 @@ double Simulation::getVelocity()
 {
 	return lander->getVelocity();
 }
+
+unsigned int Simulation::getLanderTime()
+{
+	return lander->getTime();
+}

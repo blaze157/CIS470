@@ -24,6 +24,8 @@ public:
 
 	double getVelocity();
 
+	unsigned int getLanderTime();
+
 	void update();
 };
 

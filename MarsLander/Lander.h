@@ -20,6 +20,9 @@ private:
 
 	//Fire bottom thrusters 17 18 and 19
 	void fireThruster(int number, double force);
+	void rotionalThrust(int force);
+
+	unsigned int time;
 public:
 	Lander();
 	~Lander();
@@ -38,7 +41,9 @@ public:
 	double getZpos();
 
 	double getVelocity();
-	double getAltitude();
+	double getAltitude();//height measured from lander feet
+
+	unsigned int getTime();
 	
 	void flightController();
 

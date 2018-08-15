@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Lander.h"
 
-
+#include "math.h"
 
 Lander::Lander()
 {
@@ -116,6 +116,8 @@ Lander::Lander()
 	nodes[22]->connect(nodes[11]);
 	nodes[22]->connect(nodes[12]);
 
+	time = 0;
+
 	//connector = new SQLConnector(L"cis470.c7yjsuncshex.us-east-1.rds.amazonaws.com", L"MarsLander", L"12345678");
 }
 
@@ -157,25 +159,39 @@ void Lander::sendData()
 
 double Lander::getPangle()
 {
-	//get angle in P demention (see diagram in files)
-	//should measure angle between Nodes[0] and Nodes[1]
-	return 0;
+	double relativeX, relativeZ;
+	relativeX = nodes[2]->getX() - nodes[0]->getX();
+	relativeZ = nodes[2]->getZ() - nodes[0]->getZ();
+
+	return atan2(relativeZ, relativeX);
 }
 double Lander::getQangle()
 {
-	double relativeZ, relativeY;
-	relativeZ = nodes[1]->getZ() - nodes[0]->getZ();
+	double relativeX, relativeY, relativeZ;
+	relativeX = nodes[1]->getX() - nodes[0]->getX();
 	relativeY = nodes[1]->getY() - nodes[0]->getY();
-	
-	return atan2(relativeY, relativeZ);
+	relativeZ = nodes[1]->getZ() - nodes[0]->getZ();
+
+	double distance = sqrt(square(relativeZ) + square(relativeX));
+	double angle = atan2(relativeZ, relativeX) + pi / 2;
+
+	double zDist = cos(angle - getPangle()) * distance;
+
+	return atan2(zDist, relativeY);
 }
 double Lander::getRangle()
 {
-	double relativeX, relativeY;
+	double relativeX, relativeY, relativeZ;
 	relativeX = nodes[1]->getX() - nodes[0]->getX();
 	relativeY = nodes[1]->getY() - nodes[0]->getY();
+	relativeZ = nodes[1]->getZ() - nodes[0]->getZ();
 
-	return atan2(relativeY, relativeX);
+	double distance = sqrt(square(relativeZ) + square(relativeX));
+	double angle = atan2(relativeZ, relativeX) + pi / 2;
+
+	double xDist = sin(angle - getPangle()) * distance;
+
+	return atan2(xDist, relativeY);
 }
 
 double Lander::getXpos()
@@ -196,10 +212,18 @@ double Lander::getVelocity()
 	return nodes[0]->getVelocity();
 }
 double Lander::getAltitude()
+{  
+	double average = 0;
+	average += nodes[14]->getY();
+	average += nodes[15]->getY();
+	average += nodes[16]->getY();
+	average /= 3;
+	return average;
+}
+
+unsigned int Lander::getTime()
 {
-	//should get distance from the ground
-	//probably the same as y position
-	return 0;
+	return time;
 }
 
 void Lander::fireThruster(int number, double force)
@@ -217,14 +241,85 @@ void Lander::fireThruster(int number, double force)
 		nodes[number]->force(force*xvect, force*yvect, force*zvect);
 	}
 }
+void Lander::rotionalThrust(int force)
+{
+	double xForce, yForce, zForce;
+	double scale;
+
+	xForce = nodes[7]->getX() - nodes[2]->getX();
+	yForce = nodes[7]->getY() - nodes[2]->getY();
+	zForce = nodes[7]->getZ() - nodes[2]->getZ();
+
+	scale = sqrt(square(xForce) + square(yForce) + square(zForce));
+
+	xForce /= scale;
+	yForce /= scale;
+	zForce /= scale;
+
+	xForce *= force;
+	yForce *= force;
+	zForce *= force;
+
+	nodes[20]->force(xForce, yForce, zForce);
+
+
+	xForce = nodes[4]->getX() - nodes[3]->getX();
+	yForce = nodes[4]->getY() - nodes[3]->getY();
+	zForce = nodes[4]->getZ() - nodes[3]->getZ();
+
+	scale = sqrt(square(xForce) + square(yForce) + square(zForce));
+
+	xForce /= scale;
+	yForce /= scale;
+	zForce /= scale;
+
+	xForce *= force;
+	yForce *= force;
+	zForce *= force;
+
+	nodes[21]->force(xForce, yForce, zForce);
+
+
+	xForce = nodes[6]->getX() - nodes[5]->getX();
+	yForce = nodes[6]->getY() - nodes[5]->getY();
+	zForce = nodes[6]->getZ() - nodes[5]->getZ();
+
+	scale = sqrt(square(xForce) + square(yForce) + square(zForce));
+
+	xForce /= scale;
+	yForce /= scale;
+	zForce /= scale;
+
+	xForce *= force;
+	yForce *= force;
+	zForce *= force;
+
+	nodes[22]->force(xForce, yForce, zForce);
+}
+
 void Lander::flightController()
 {
-	//if (getYpos() < 1000)
+	if (time == 0)
 	{
-		fireThruster(17, 23 / 3.0);
-		fireThruster(18, 23 / 3.0);
-		fireThruster(19, 23 / 3.0);
+		rotionalThrust(100);
 	}
+
+	/*if (time == 10000)
+	{
+		rotionalThrust(-100);
+		//fireThruster(17, 23 / 3.0);
+		//fireThruster(18, 1000);
+		//fireThruster(19, 23 / 3.0);
+	}*/
+
+	/*if (time == 20000)
+	{
+		//fireThruster(17, 23 / 3.0);
+		fireThruster(18, 1000);
+		//fireThruster(19, 23 / 3.0);
+	}*/
+
+	time++;
 
 	//sendData();
 }

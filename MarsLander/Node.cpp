@@ -83,9 +83,9 @@ void Node::restrain()//Move nodes to where they should be
 			double relativeVel = nextDist - distance;
 
 			//apply force proportional to the extra distance
-			double xForce = (relativeX / distance) * (distance - distances[i]) * scale;
-			double yForce = (relativeY / distance) * (distance - distances[i]) * scale;
-			double zForce = (relativeZ / distance) * (distance - distances[i]) * scale;
+			double xForce = (relativeX / distance) * square(distance - distances[i]) * scale;
+			double yForce = (relativeY / distance) * square(distance - distances[i]) * scale;
+			double zForce = (relativeZ / distance) * square(distance - distances[i]) * scale;
 
 			//The ifs allow the nodes to only restrain when actively moving in the wrong direction
 			//It prevents the particles from vibrating back and forth
@@ -96,8 +96,8 @@ void Node::restrain()//Move nodes to where they should be
 			}
 			if (distance<distances[i] && relativeVel<0)
 			{
-				force(xForce, yForce, zForce);
-				connections[i]->force(-xForce, -yForce, -zForce);
+				force(-xForce, -yForce, -zForce);
+				connections[i]->force(xForce, yForce, zForce);
 			}
 		}
 	}
@@ -122,7 +122,15 @@ double Node::getZ()
 	return z;
 }
 
-double Node::getVelocity()
+double Node::getXVelocity()
 {
-	return sqrt(square(xvel) + square(yvel) + square(zvel));
+	return xvel;
+}
+double Node::getYVelocity()
+{
+	return yvel;
+}
+double Node::getZVelocity()
+{
+	return zvel;
 }

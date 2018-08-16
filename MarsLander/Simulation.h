@@ -23,6 +23,8 @@ public:
 	double getZpos();
 
 	double getVelocity();
+	double getVelocityPangle();
+	double getVelocityQangle();
 
 	unsigned int getLanderTime();
 

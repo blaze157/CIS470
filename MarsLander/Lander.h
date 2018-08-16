@@ -41,6 +41,9 @@ public:
 	double getZpos();
 
 	double getVelocity();
+	double getVelocityPangle();
+	double getVelocityQangle();
+
 	double getAltitude();//height measured from lander feet
 
 	unsigned int getTime();

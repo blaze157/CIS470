@@ -32,6 +32,8 @@ public:
 	double getY();
 	double getZ();
 
-	double getVelocity();
+	double getXVelocity();
+	double getYVelocity();
+	double getZVelocity();
 };
 

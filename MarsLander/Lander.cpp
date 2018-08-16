@@ -3,6 +3,8 @@
 
 #include "math.h"
 
+#include <iostream>
+
 Lander::Lander()
 {
 	//center
@@ -47,7 +49,7 @@ Lander::Lander()
 
 	//top to top sides
 	for(int i = 8; i <= 13; i++)
-		nodes[0]->connect(nodes[i]);
+		nodes[1]->connect(nodes[i]);
 
 	//center to sides
 	for (int i = 2; i <= 7; i++)
@@ -160,38 +162,38 @@ void Lander::sendData()
 double Lander::getPangle()
 {
 	double relativeX, relativeZ;
-	relativeX = nodes[2]->getX() - nodes[0]->getX();
-	relativeZ = nodes[2]->getZ() - nodes[0]->getZ();
+	relativeX = nodes[3]->getX() - nodes[7]->getX();
+	relativeZ = nodes[3]->getZ() - nodes[7]->getZ();
 
-	return atan2(relativeZ, relativeX);
+	return atan2(relativeX, relativeZ);
 }
 double Lander::getQangle()
 {
 	double relativeX, relativeY, relativeZ;
-	relativeX = nodes[1]->getX() - nodes[0]->getX();
-	relativeY = nodes[1]->getY() - nodes[0]->getY();
-	relativeZ = nodes[1]->getZ() - nodes[0]->getZ();
+	relativeX = nodes[3]->getX() - nodes[7]->getX();
+	relativeY = nodes[3]->getY() - nodes[7]->getY();
+	relativeZ = nodes[3]->getZ() - nodes[7]->getZ();
 
 	double distance = sqrt(square(relativeZ) + square(relativeX));
-	double angle = atan2(relativeZ, relativeX) + pi / 2;
 
-	double zDist = cos(angle - getPangle()) * distance;
-
-	return atan2(zDist, relativeY);
+	return atan2(relativeY,distance);
 }
 double Lander::getRangle()
 {
 	double relativeX, relativeY, relativeZ;
-	relativeX = nodes[1]->getX() - nodes[0]->getX();
-	relativeY = nodes[1]->getY() - nodes[0]->getY();
-	relativeZ = nodes[1]->getZ() - nodes[0]->getZ();
+	relativeX = nodes[2]->getX() - nodes[0]->getX();
+	relativeY = nodes[2]->getY() - nodes[0]->getY();
+	relativeZ = nodes[2]->getZ() - nodes[0]->getZ();
 
 	double distance = sqrt(square(relativeZ) + square(relativeX));
-	double angle = atan2(relativeZ, relativeX) + pi / 2;
 
-	double xDist = sin(angle - getPangle()) * distance;
+	std::cout << nodes[1]->getY() - nodes[0]->getY() << std::endl;
+	if (nodes[1]->getY() < nodes[0]->getY())//upside down?
+	{
+		return atan2(relativeY, -distance);//other side of circle
+	}
 
-	return atan2(xDist, relativeY);
+	return atan2(relativeY, distance);
 }
 
 double Lander::getXpos()
@@ -209,8 +211,19 @@ double Lander::getZpos()
 
 double Lander::getVelocity()
 {
-	return nodes[0]->getVelocity();
+	return sqrt(square(nodes[0]->getXVelocity()) + square(nodes[0]->getYVelocity()) + square(nodes[0]->getZVelocity()));
 }
+double Lander::getVelocityPangle()
+{
+	return atan2(nodes[0]->getZVelocity(), nodes[0]->getXVelocity());
+}
+double Lander::getVelocityQangle()
+{
+	double distance = sqrt(square(nodes[0]->getZVelocity()) + square(nodes[0]->getXVelocity()));
+
+	return atan2(distance, nodes[0]->getYVelocity())-pi/2;
+}
+
 double Lander::getAltitude()
 {  
 	double average = 0;
@@ -299,24 +312,32 @@ void Lander::rotionalThrust(int force)
 
 void Lander::flightController()
 {
-	if (time == 0)
+	//if (time == 0)
 	{
-		rotionalThrust(100);
+		//rotionalThrust(10);
 	}
 
-	/*if (time == 10000)
+	if (time <= 10000)
 	{
-		rotionalThrust(-100);
-		//fireThruster(17, 23 / 3.0);
-		//fireThruster(18, 1000);
-		//fireThruster(19, 23 / 3.0);
-	}*/
+		//fireThruster(17, 3);
+		fireThruster(18, .1);
+		//fireThruster(19, 1);
+	}
+	if (time >= 10000 && time <= 40000)
+	{
+		fireThruster(18, .1);
+	}
 
-	/*if (time == 20000)
+	/*if (time < 1000 && time > 100)
 	{
-		//fireThruster(17, 23 / 3.0);
-		fireThruster(18, 1000);
-		//fireThruster(19, 23 / 3.0);
+		fireThruster(17, 30 / 3.0);
+		fireThruster(19, 30 / 3.0);
+	}*/
+	/*if (time > 1000)
+	{
+		fireThruster(17, 30 / 3.0);
+		fireThruster(18, 30 / 3.0);
+		fireThruster(19, 30 / 3.0);
 	}*/
 
 	time++;
@@ -328,7 +349,7 @@ void Lander::update()
 {
 	for (int i = 0; i < nodes.size(); i++)
 	{
-		//nodes[i]->gravity();
+		nodes[i]->gravity();
 	}
 	for (int i = 0; i < nodes.size(); i++)
 	{

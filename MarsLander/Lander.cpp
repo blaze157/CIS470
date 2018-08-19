@@ -8,40 +8,40 @@
 Lander::Lander()
 {
 	//center
-	nodes.push_back(new Node(0, 0, 0, 1));//0
+	nodes.push_back(new Node(0, 0, 0, 53));//0
 	//top
-	nodes.push_back(new Node(0, 2.8, 0, 1));//1
+	nodes.push_back(new Node(0, 2.8, 0, 53));//1
 
 	//sides
-	nodes.push_back(new Node(-7, 0, 0, 1));//2
-	nodes.push_back(new Node(-3.5, 0, 6.0622, 1));//3
-	nodes.push_back(new Node(3.5, 0, 6.0622, 1));//4
-	nodes.push_back(new Node(7, 0, 0, 1));//5
-	nodes.push_back(new Node(3.5, 0, -6.0622, 1));//6
-	nodes.push_back(new Node(-3.5, 0, -6.0622, 1));//7
+	nodes.push_back(new Node(-7, 0, 0, 53));//2
+	nodes.push_back(new Node(-3.5, 0, 6.0622, 53));//3
+	nodes.push_back(new Node(3.5, 0, 6.0622, 53));//4
+	nodes.push_back(new Node(7, 0, 0, 53));//5
+	nodes.push_back(new Node(3.5, 0, -6.0622, 53));//6
+	nodes.push_back(new Node(-3.5, 0, -6.0622, 53));//7
 
 	//top sides
-	nodes.push_back(new Node(-4.9, 2.8, 0, 1));//8
-	nodes.push_back(new Node(-2.45, 2.8, 4.2435, 1));//9
-	nodes.push_back(new Node(2.45, 2.8, 4.2435, 1));//10
-	nodes.push_back(new Node(4.9, 2.8, 0, 1));//11
-	nodes.push_back(new Node(2.45, 2.8, -4.2435, 1));//12
-	nodes.push_back(new Node(-2.45, 2.8, -4.2435, 1));//13
+	nodes.push_back(new Node(-4.9, 2.8, 0, 53));//8
+	nodes.push_back(new Node(-2.45, 2.8, 4.2435, 53));//9
+	nodes.push_back(new Node(2.45, 2.8, 4.2435, 53));//10
+	nodes.push_back(new Node(4.9, 2.8, 0, 53));//11
+	nodes.push_back(new Node(2.45, 2.8, -4.2435, 53));//12
+	nodes.push_back(new Node(-2.45, 2.8, -4.2435, 53));//13
 
 	//feet
-	nodes.push_back(new Node(-2.45, -3.5, -1.4073, 1));//14
-	nodes.push_back(new Node(2.45, -3.5, -1.4073, 1));//15
-	nodes.push_back(new Node(0, -3.5, 2.8363, 1));//16
+	nodes.push_back(new Node(-2.45, -3.5, -1.4073, 53));//14
+	nodes.push_back(new Node(2.45, -3.5, -1.4073, 53));//15
+	nodes.push_back(new Node(0, -3.5, 2.8363, 53));//16
 
 	//bottom thrusters
-	nodes.push_back(new Node(-2.45, 0, -1.4073, 1));//17
-	nodes.push_back(new Node(0, 0, 2.8363, 1));//18
-	nodes.push_back(new Node(2.45, 0, -1.4073, 1));//19
+	nodes.push_back(new Node(-2.45, 0, -1.4073, 53));//17
+	nodes.push_back(new Node(0, 0, 2.8363, 53));//18
+	nodes.push_back(new Node(2.45, 0, -1.4073, 53));//19
 
 	//rotation thrusters
-	nodes.push_back(new Node(-4.7358, 1.4, -2.7605, 1));//20
-	nodes.push_back(new Node(0, 1.4, 5.1529, 1));//21
-	nodes.push_back(new Node(4.7358, 1.4, -2.7605, 1));//22
+	nodes.push_back(new Node(-4.7358, 1.4, -2.7605, 53));//20
+	nodes.push_back(new Node(0, 1.4, 5.1529, 53));//21
+	nodes.push_back(new Node(4.7358, 1.4, -2.7605, 53));//22
 
 	//connections
 	//center to top
@@ -150,7 +150,8 @@ void Lander::setVelocity(double xvel, double yvel, double zvel)
 {
 	for (int i = 0; i < nodes.size(); i++)
 	{
-		nodes[i]->setVeloctiy(xvel, yvel, zvel);
+		//divide by 1000 to convert to feet/millisecond
+		nodes[i]->setVeloctiy(xvel / 1000, yvel / 1000, zvel / 1000);
 	}
 }
 
@@ -176,7 +177,7 @@ double Lander::getQangle()
 
 	double distance = sqrt(square(relativeZ) + square(relativeX));
 
-	return atan2(relativeY,distance);
+	return atan2(-relativeY,distance);
 }
 double Lander::getRangle()
 {
@@ -187,13 +188,25 @@ double Lander::getRangle()
 
 	double distance = sqrt(square(relativeZ) + square(relativeX));
 
-	std::cout << nodes[1]->getY() - nodes[0]->getY() << std::endl;
 	if (nodes[1]->getY() < nodes[0]->getY())//upside down?
 	{
 		return atan2(relativeY, -distance);//other side of circle
 	}
 
 	return atan2(relativeY, distance);
+}
+
+double Lander::getPvelocity()
+{
+	return circularDistance(getPangle(), previousP);
+}
+double Lander::getQvelocity()
+{
+	return getQangle() - previousQ;
+}
+double Lander::getRvelocity()
+{
+	return getRangle() - previousR;
 }
 
 double Lander::getXpos()
@@ -211,11 +224,11 @@ double Lander::getZpos()
 
 double Lander::getVelocity()
 {
-	return sqrt(square(nodes[0]->getXVelocity()) + square(nodes[0]->getYVelocity()) + square(nodes[0]->getZVelocity()));
+	return sqrt(square(nodes[0]->getXVelocity()) + square(nodes[0]->getYVelocity()) + square(nodes[0]->getZVelocity())) * 1000;
 }
 double Lander::getVelocityPangle()
 {
-	return atan2(nodes[0]->getZVelocity(), nodes[0]->getXVelocity());
+	return atan2(nodes[0]->getXVelocity(), nodes[0]->getZVelocity());
 }
 double Lander::getVelocityQangle()
 {
@@ -311,34 +324,141 @@ void Lander::rotionalThrust(int force)
 }
 
 void Lander::flightController()
-{
-	//if (time == 0)
+{// sorry about the mess. This part isn't finished quite yet.
+	double thrust17 = 0, thrust18 = 0, thrust19 = 0;
+	double throttle = 0;
+
+	//disconnect 5000
+	if (getAltitude() < 5000 && getAltitude() > 100)
 	{
-		//rotionalThrust(10);
+		throttle = 1;// getVelocity()*sin(getVelocityPangle());
+
+		if (throttle > 1)
+			throttle = 1;
+
+		bool fireEngines = false;
+
+		double pDistance = circularDistance(getVelocityPangle(), getPangle());
+		double desiredQ = pi / 2;
+			
+		if(getVelocity() > 1)
+		desiredQ = getVelocityQangle() + (pi / 2 - getVelocityQangle())/1.1/* / (getVelocity())*/;
+
+		if (abs(getPangle()) < pi / 2)// not upside down
+		{
+			//fire thrusters if ponted the right direction
+			if (getVelocity() > 5 && getVelocityQangle() > .1
+				&& (pDistance > -.1 && pDistance < .1
+					&& getQangle() + pi / 2 > getVelocityQangle()	&& getRangle() + pDistance < .1
+					&& getQangle() + pi / 2 < pi - getVelocityQangle()/2 && getRangle() + pDistance > -.1)
+				|| (getVelocityQangle() > 1.3 && getQangle() + pi / 2 > 1.3))
+			{
+				fireEngines = true;
+				std::cout << "!";
+			}
+
+			//std::cout << getPvelocity() << " ";
+			if (((pDistance < 0 && getPvelocity() < 0)
+				|| (pDistance < -1 && getPvelocity() < .001)
+				|| getPvelocity() < -.001)
+				/*&& getQangle() + pi / 2 < 1.5*/)
+			{
+				//std::cout << "r";
+				rotionalThrust(600);
+			}
+			if (((pDistance > 0 && getPvelocity() > 0)
+				|| (pDistance > 1 && getPvelocity() > -.001)
+				|| getPvelocity() > .001)
+				/*&& getQangle() + pi / 2 < 1.5*/)
+			{
+				//std::cout << "l";
+				rotionalThrust(600);
+			}
+
+			if ((getQangle() + pi / 2 > desiredQ && getQvelocity() > 0)
+				|| (getQangle() + pi / 2 > desiredQ + .1 && getQvelocity() > -.0001)
+				|| getQvelocity() > .0001)
+			{
+				thrust18 += abs(getQangle() + getQvelocity() + pi / 2 - desiredQ) * 600;
+			}
+			if ((getQangle() + pi / 2 < desiredQ && getQvelocity() < 0)
+				|| (getQangle() + pi / 2 < desiredQ - .1 && getQvelocity() < .0001)
+				|| getQvelocity() < -.0001)
+			{
+				thrust17 += abs(getQangle() + getQvelocity() + pi / 2 - desiredQ) * 600;
+				thrust19 += abs(getQangle() + getQvelocity() + pi / 2 - desiredQ) * 600;
+			}
+
+			if (getRangle() + pDistance > 0 && getRvelocity() > 0
+				|| getRangle() + pDistance > .1 && getRvelocity() > -.0001)
+			{
+				thrust19 += abs(getRangle()) * 700;
+				thrust18 += abs(getRangle()) * 200;
+			}
+			if (getRangle() + pDistance < 0 && getRvelocity() < 0
+				|| getRangle() + pDistance < -.1 && getRvelocity() < .0001)
+			{
+				thrust17 += abs(getRangle()) * 700;
+				thrust18 += abs(getRangle()) * 200;
+			}
+		}
+		else
+		{
+			if (getQangle() < 0)
+			{
+				thrust17 = 600;
+				thrust19 = 600;
+			}
+			else
+			{
+				thrust18 = 600;
+			}
+		}
+
+
+		double maximum = max (max(thrust17, thrust18), thrust19);
+
+		if (maximum > 600)
+		{
+			thrust17 /= maximum;
+			thrust17 *= 600 * throttle;
+			thrust18 /= maximum;
+			thrust18 *= 600 * throttle;
+			thrust19 /= maximum;
+			thrust19 *= 600 * throttle;
+		}
+
+		double thrust = 600;
+
+		if (getVelocity() * 10 < 600)
+			thrust = getVelocity() * 10;
+
+		if (fireEngines)
+		{
+
+			fireThruster(17, thrust - thrust18/2 - thrust19 / 2);
+			fireThruster(18, thrust - thrust17/2 - thrust19 / 2);
+			fireThruster(19, thrust - thrust17/2 - thrust18 / 2);
+		}
+		else
+		{
+			fireThruster(17, thrust17);
+			fireThruster(18, thrust18);
+			fireThruster(19, thrust19);
+		}
+
 	}
 
-	if (time <= 10000)
+	if (getAltitude() < 100 && getAltitude() > 10)
 	{
-		//fireThruster(17, 3);
-		fireThruster(18, .1);
-		//fireThruster(19, 1);
-	}
-	if (time >= 10000 && time <= 40000)
-	{
-		fireThruster(18, .1);
+		if (getVelocity() > 1 && getVelocityQangle() > 1)
+		{
+			fireThruster(17, 600);
+			fireThruster(18, 600);
+			fireThruster(19, 600);
+		}
 	}
 
-	/*if (time < 1000 && time > 100)
-	{
-		fireThruster(17, 30 / 3.0);
-		fireThruster(19, 30 / 3.0);
-	}*/
-	/*if (time > 1000)
-	{
-		fireThruster(17, 30 / 3.0);
-		fireThruster(18, 30 / 3.0);
-		fireThruster(19, 30 / 3.0);
-	}*/
 
 	time++;
 
@@ -347,6 +467,9 @@ void Lander::flightController()
 
 void Lander::update()
 {
+	previousP = getPangle();
+	previousQ = getQangle();
+	previousR = getRangle();
 	for (int i = 0; i < nodes.size(); i++)
 	{
 		nodes[i]->gravity();

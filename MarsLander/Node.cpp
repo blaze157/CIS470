@@ -65,7 +65,7 @@ void Node::restrain()//Move nodes to where they should be
 	//strength of node connection
 	//low for squishy
 	//high for ridgid but twitchy
-	const double scale = 20000;
+	const double scale = 10000;
 	for (int i = 0; i<connections.size(); i++)
 	{
 		if (connections[i])

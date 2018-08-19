@@ -23,6 +23,11 @@ private:
 	void rotionalThrust(int force);
 
 	unsigned int time;
+
+	double previousP;
+	double previousQ;
+	double previousR;
+
 public:
 	Lander();
 	~Lander();
@@ -35,6 +40,10 @@ public:
 	double getPangle();
 	double getQangle();
 	double getRangle();
+
+	double getPvelocity();
+	double getQvelocity();
+	double getRvelocity();
 
 	double getXpos();
 	double getYpos();

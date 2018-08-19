@@ -7,7 +7,7 @@ Simulation::Simulation(double startX, double startY, double startZ, double start
 	lander = new Lander();
 	lander->move(startX, startY, startZ);
 	lander->tilt(startP, startQ, startR);
-	lander->setVelocity(startVelocity, startVerticalVelocity, 0);
+	lander->setVelocity(0, startVerticalVelocity, startVelocity);
 }
 Simulation::~Simulation()
 {

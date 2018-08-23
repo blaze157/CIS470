@@ -28,6 +28,10 @@ private:
 	double previousQ;
 	double previousR;
 
+	int stage;
+
+	int landed;
+
 public:
 	Lander();
 	~Lander();

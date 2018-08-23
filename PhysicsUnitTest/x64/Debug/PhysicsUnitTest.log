@@ -1,2 +1,10 @@
 ﻿  Lander.cpp
+c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(394): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(396): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(410): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(412): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(450): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(461): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(514): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(518): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
   PhysicsUnitTest.vcxproj -> C:\Users\Kyle Booth\Source\Repos\CIS470\x64\Debug\PhysicsUnitTest.exe

@@ -21,9 +21,11 @@ public:
 	void setVeloctiy(double xvel, double yvel, double zvel);
 
 	void connect(Node* to);
+	void disconnect(Node* to);
 
 	void force(double xForce, double yForce, double zForce);
 	void gravity();
+	void drag(double coefficent, double density, double aria);
 	
 	void restrain();//Move nodes to where they should be
 	void update();//advance node one tick

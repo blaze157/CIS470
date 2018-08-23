@@ -47,9 +47,30 @@ void Node::connect(Node* to)
 	to->distances.push_back(distance);
 }
 
+void Node::disconnect(Node * to)
+{
+	int location;
+
+	for (location = 0; location < connections.size(); location++)
+	if (connections[location] == to)
+		break;
+
+
+	connections.erase(connections.begin() + location); 
+	distances.erase(distances.begin() + location);
+
+
+	for (location = 0; location < to->connections.size(); location++)
+		if (to->connections[location] == this)
+			break;
+
+	to->connections.erase(to->connections.begin() + location);
+	to->distances.erase(to->distances.begin() + location);
+}
+
 void Node::force(double xForce, double yForce, double zForce)
 {
-	double poundsForce = 32.1740486;//convert pounds force to pounds mass
+	const double poundsForce = 32.1740486;//convert pounds force to pounds mass
 	xvel += xForce * poundsForce / mass / 1000 / 1000;//1000 for sec to ms
 	yvel += yForce * poundsForce / mass / 1000 / 1000;
 	zvel += zForce * poundsForce / mass / 1000 / 1000;
@@ -58,6 +79,14 @@ void Node::gravity()
 {
 	//12.1 feet/sec/sec on mars
 	yvel -= 12.1 / 1000 / 1000;
+}
+void Node::drag(double coefficent, double density, double aria)
+{
+	const double poundsForce = 32.1740486;
+	double velocity = sqrt(square(xvel) + square(yvel) + square(zvel)) * 1000;
+	double dragForce = (coefficent * density / poundsForce * square(velocity) * aria) / 2;
+	double maxVel = max(xvel, max(yvel, zvel));
+	force(-dragForce * xvel / maxVel, -dragForce * yvel / maxVel, -dragForce * zvel / maxVel);
 }
 
 void Node::restrain()//Move nodes to where they should be
@@ -88,7 +117,7 @@ void Node::restrain()//Move nodes to where they should be
 			double zForce = (relativeZ / distance) * square(distance - distances[i]) * scale;
 
 			//The ifs allow the nodes to only restrain when actively moving in the wrong direction
-			//It prevents the particles from vibrating back and forth
+			//It prevents the particles from vibrating back and forth sort of like a d gain
 			if (distance>distances[i] && relativeVel>0)
 			{
 				force(xForce, yForce, zForce);

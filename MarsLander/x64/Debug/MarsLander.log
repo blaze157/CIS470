@@ -1,5 +1,1 @@
-﻿  Lander.cpp
-Lander.cpp(1): warning C4005: '__CLR_VER': macro redefinition
-  Lander.cpp(1): note: command-line arguments:  see previous definition of '__CLR_VER'
-Lander.cpp(1): warning C4651: '/D__CLR_VER=40601086' specified for precompiled header but not for current compile
-  MarsLander.vcxproj -> C:\Users\Kyle Booth\source\repos\CIS470\x64\Debug\MarsLander.exe
+﻿  MarsLander.vcxproj -> C:\Users\Kyle Booth\Source\Repos\CIS470\x64\Debug\MarsLander.exe

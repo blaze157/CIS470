@@ -1,10 +1,19 @@
-﻿  Lander.cpp
-c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(394): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(396): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(410): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(412): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(450): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(461): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(514): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-c:\users\kyle booth\source\repos\cis470\marslander\lander.cpp(518): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+﻿  stdafx.cpp
+  Lander.cpp
+..\MarsLander\Lander.cpp(394): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+..\MarsLander\Lander.cpp(396): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+..\MarsLander\Lander.cpp(410): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+..\MarsLander\Lander.cpp(412): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+..\MarsLander\Lander.cpp(450): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+..\MarsLander\Lander.cpp(461): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+..\MarsLander\Lander.cpp(514): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+..\MarsLander\Lander.cpp(518): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+  math.cpp
+  Node.cpp
+  Simulation.cpp
+  SQLConnect.cpp
+  PhysicsUnitTest.cpp
+  Generating Code...
+  .NETFramework,Version=v4.0.AssemblyAttributes.cpp
+  Lander.obj : /DEBUG:FASTLINK is not supported when managed code is present; restarting link with /DEBUG:FULL
   PhysicsUnitTest.vcxproj -> C:\Users\Kyle Booth\Source\Repos\CIS470\x64\Debug\PhysicsUnitTest.exe

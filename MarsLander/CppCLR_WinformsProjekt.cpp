@@ -19,6 +19,6 @@ using namespace System::Windows::Forms;
 int main() {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
-	Application::Run(gcnew CppCLR_WinformsProjekt::Form1()); // "CppCLR_WinformsProjekt" noch anpassen
+	Application::Run(gcnew MarsLander1::Form1()); // "CppCLR_WinformsProjekt" noch anpassen
 	return 0;
 }

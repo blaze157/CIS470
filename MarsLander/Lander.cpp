@@ -127,8 +127,16 @@ Lander::Lander()
 	time = 0;
 	stage = 0;
 
+	lastForce[0] = 0;
+	lastForce[1] = 0;
+	lastForce[2] = 0;
+	lastForce[3] = 0;
+	lastForce[4] = 0;
+	lastForce[5] = 0;
+
 	landed = 0;
 
+	connector = 0;
 	//connector = new SQLConnector(L"cis470.c7yjsuncshex.us-east-1.rds.amazonaws.com", L"MarsLander", L"12345678");
 }
 
@@ -141,6 +149,7 @@ Lander::~Lander()
 	}
 	nodes.clear();
 
+	if (connector)
 	delete connector;
 }
 
@@ -261,10 +270,50 @@ unsigned int Lander::getTime()
 	return time;
 }
 
+int Lander::getLanded()
+{
+	return landed;
+}
+
+double Lander::getThrust(int engine)
+{
+	return lastForce[engine];
+}
+
+double Lander::getXaccel()
+{
+	double accel = sqrt(square(Xaccel) + square(Yaccel) + square(Zaccel));
+	double accelPangle = atan2(Xaccel, Zaccel);
+	double accelRangle = atan2(sqrt(square(Zaccel) + square(Xaccel)), Yaccel);
+	accel *= sin(circularDistance(accelPangle, getPangle()));
+	accel *= cos(circularDistance(accelRangle, getRangle()));
+	return accel;
+}
+
+double Lander::getYaccel()
+{
+	double accel = sqrt(square(Xaccel) + square(Yaccel) + square(Zaccel));
+	double accelPangle = atan2(Xaccel, Zaccel);
+	double accelQangle = atan2(sqrt(square(Zaccel) + square(Xaccel)), Yaccel);
+	accel *= sin(circularDistance(accelQangle, getQangle()));
+	return accel;
+}
+
+double Lander::getZaccel()
+{
+	double accel = sqrt(square(Xaccel) + square(Yaccel) + square(Zaccel));
+	double accelPangle = atan2(Xaccel, Zaccel);
+	double accelQangle = atan2(sqrt(square(Zaccel) + square(Xaccel)), Yaccel);
+	accel *= cos(circularDistance(accelPangle, getPangle()));
+	accel *= cos(circularDistance(accelQangle, getQangle()));
+	return accel;
+}
+
 void Lander::fireThruster(int number, double force)
 {
 	if (number >= 17 && number <= 19)
 	{
+		lastForce[number - 17] = force;
 		//get normalized vector from center to top
 		//basicly a vector pointing up relative to the lander
 		double xvect, yvect, zvect;
@@ -330,14 +379,17 @@ void Lander::rotionalThrust(int force)
 	zForce *= force;
 
 	nodes[22]->force(xForce, yForce, zForce);
+
+	lastForce[3] = force;
+	lastForce[4] = force;
+	lastForce[5] = force;
 }
 
 void Lander::flightController()
-{// sorry about the mess. This part isn't finished quite yet.
+{
 	double thrust17 = 0, thrust18 = 0, thrust19 = 0;
 	double throttle = 0;
 
-	//disconnect 5000
 	double maximum = 0;
 	bool fireEngines = false;
 	double pDistance = circularDistance(getVelocityPangle(), getPangle());
@@ -411,9 +463,6 @@ void Lander::flightController()
 				else
 					rotionalThrust(-rotation);
 			}
-
-			if(desiredQ > pi/2)
-			std::cout << desiredQ << " - ";
 
 			if ((getQangle() + pi / 2 > desiredQ && getQvelocity() > 0)
 				|| (getQangle() + pi / 2 > desiredQ + .1 && getQvelocity() > -.0001)
@@ -569,6 +618,10 @@ void Lander::update()
 	previousQ = getQangle();
 	previousR = getRangle();
 
+	previousXvel = nodes[0]->getXVelocity();
+	previousYvel = nodes[0]->getYVelocity();
+	previousZvel = nodes[0]->getZVelocity();
+
 	for (int i = 0; i < nodes.size(); i++)
 	{
 		nodes[i]->gravity();
@@ -652,4 +705,8 @@ void Lander::update()
 				nodes[16]->force(groundForce / 2, groundForce, groundForce / 2);
 		}
 	}
+
+	Xaccel = nodes[0]->getXVelocity() - previousXvel;
+	Yaccel = nodes[0]->getYVelocity() - previousYvel;
+	Zaccel = nodes[0]->getZVelocity() - previousZvel;
 }

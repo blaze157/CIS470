@@ -26,6 +26,13 @@ public:
 	double getVelocityPangle();
 	double getVelocityQangle();
 
+	int getLanded();
+
+	double getThrust(int engine);
+	double getXaccel();
+	double getYaccel();
+	double getZaccel();
+
 	unsigned int getLanderTime();
 
 	void update();

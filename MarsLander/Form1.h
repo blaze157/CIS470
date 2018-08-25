@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Simulation.h"
+
 namespace MarsLander1 {
 
 	using namespace System;
@@ -14,13 +16,19 @@ namespace MarsLander1 {
 	/// </summary>
 	public ref class Form1 : public System::Windows::Forms::Form
 	{
+	private:
+		Simulation *simulation;
+
+		int speed;
+		bool closing;
+		System::ComponentModel::BackgroundWorker^  backgroundWorker1;
+
 	public:
 		Form1(void)
 		{
+			closing = false;
+			simulation = new Simulation(0, 10000, 0, 0, 0, 0, 1000, -100);
 			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
 		}
 
 	protected:
@@ -33,14 +41,17 @@ namespace MarsLander1 {
 			{
 				delete components;
 			}
+
+			if (simulation)
+			delete simulation;
 		}
 	private: System::Windows::Forms::Label^  lba1;
 	private: System::Windows::Forms::Label^  lba2;
 	private: System::Windows::Forms::Label^  lba3;
 	private: System::Windows::Forms::Label^  lbdr1;
-	private: System::Windows::Forms::Label^  lbdr2;
-	private: System::Windows::Forms::Label^  lbdr3;
-	private: System::Windows::Forms::Label^  lbdr4;
+
+
+
 	private: System::Windows::Forms::Label^  lbar;
 	protected: 
 
@@ -63,7 +74,7 @@ namespace MarsLander1 {
 
 
 	private: System::Windows::Forms::Label^  lbtts1;
-	private: System::Windows::Forms::Label^  lbts2;
+
 	private: System::Windows::Forms::Label^  lbsg1;
 	private: System::Windows::Forms::Label^  lbsg2;
 	private: System::Windows::Forms::Label^  lbsg3;
@@ -111,8 +122,6 @@ namespace MarsLander1 {
 	private: System::Windows::Forms::TextBox^  txta2;
 	private: System::Windows::Forms::TextBox^  txta3;
 	private: System::Windows::Forms::TextBox^  txtdr1;
-	private: System::Windows::Forms::TextBox^  txtdr2;
-	private: System::Windows::Forms::TextBox^  txtdr4;
 
 
 
@@ -125,10 +134,14 @@ namespace MarsLander1 {
 
 
 
-	private: System::Windows::Forms::TextBox^  txtdr3;
+
+
+
 	private: System::Windows::Forms::TextBox^  txtar;
-	private: System::Windows::Forms::TextBox^  txtts1;
-	private: System::Windows::Forms::TextBox^  txtts2;
+private: System::Windows::Forms::TextBox^  txttime;
+
+
+
 	private: System::Windows::Forms::TextBox^  txtsg1;
 	private: System::Windows::Forms::TextBox^  txtsg2;
 	private: System::Windows::Forms::TextBox^  txtsg3;
@@ -161,9 +174,12 @@ private: System::Windows::Forms::TextBox^  txtate3;
 private: System::Windows::Forms::TextBox^  txtpra;
 private: System::Windows::Forms::TextBox^  txtts;
 private: System::Windows::Forms::Label^  lbts;
-private: System::Windows::Forms::Button^  button1;
-private: System::Windows::Forms::Button^  button2;
-private: System::Windows::Forms::Button^  button3;
+private: System::Windows::Forms::Button^  Start;
+private: System::Windows::Forms::Button^  Slow;
+private: System::Windows::Forms::Button^  Pause;
+
+
+
 
 
 
@@ -186,12 +202,8 @@ private: System::Windows::Forms::Button^  button3;
 			this->lba2 = (gcnew System::Windows::Forms::Label());
 			this->lba3 = (gcnew System::Windows::Forms::Label());
 			this->lbdr1 = (gcnew System::Windows::Forms::Label());
-			this->lbdr2 = (gcnew System::Windows::Forms::Label());
-			this->lbdr3 = (gcnew System::Windows::Forms::Label());
-			this->lbdr4 = (gcnew System::Windows::Forms::Label());
 			this->lbar = (gcnew System::Windows::Forms::Label());
 			this->lbtts1 = (gcnew System::Windows::Forms::Label());
-			this->lbts2 = (gcnew System::Windows::Forms::Label());
 			this->lbsg1 = (gcnew System::Windows::Forms::Label());
 			this->lbsg2 = (gcnew System::Windows::Forms::Label());
 			this->lbsg3 = (gcnew System::Windows::Forms::Label());
@@ -204,12 +216,8 @@ private: System::Windows::Forms::Button^  button3;
 			this->txta2 = (gcnew System::Windows::Forms::TextBox());
 			this->txta3 = (gcnew System::Windows::Forms::TextBox());
 			this->txtdr1 = (gcnew System::Windows::Forms::TextBox());
-			this->txtdr2 = (gcnew System::Windows::Forms::TextBox());
-			this->txtdr4 = (gcnew System::Windows::Forms::TextBox());
-			this->txtdr3 = (gcnew System::Windows::Forms::TextBox());
 			this->txtar = (gcnew System::Windows::Forms::TextBox());
-			this->txtts1 = (gcnew System::Windows::Forms::TextBox());
-			this->txtts2 = (gcnew System::Windows::Forms::TextBox());
+			this->txttime = (gcnew System::Windows::Forms::TextBox());
 			this->txtsg1 = (gcnew System::Windows::Forms::TextBox());
 			this->txtsg2 = (gcnew System::Windows::Forms::TextBox());
 			this->txtsg3 = (gcnew System::Windows::Forms::TextBox());
@@ -225,9 +233,10 @@ private: System::Windows::Forms::Button^  button3;
 			this->txtpra = (gcnew System::Windows::Forms::TextBox());
 			this->txtts = (gcnew System::Windows::Forms::TextBox());
 			this->lbts = (gcnew System::Windows::Forms::Label());
-			this->button1 = (gcnew System::Windows::Forms::Button());
-			this->button2 = (gcnew System::Windows::Forms::Button());
-			this->button3 = (gcnew System::Windows::Forms::Button());
+			this->Start = (gcnew System::Windows::Forms::Button());
+			this->Slow = (gcnew System::Windows::Forms::Button());
+			this->Pause = (gcnew System::Windows::Forms::Button());
+			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->SuspendLayout();
 			// 
 			// lba1
@@ -243,7 +252,7 @@ private: System::Windows::Forms::Button^  button3;
 			// lba2
 			// 
 			this->lba2->AutoSize = true;
-			this->lba2->Location = System::Drawing::Point(30, 32);
+			this->lba2->Location = System::Drawing::Point(30, 35);
 			this->lba2->Name = L"lba2";
 			this->lba2->Size = System::Drawing::Size(84, 13);
 			this->lba2->TabIndex = 1;
@@ -253,7 +262,7 @@ private: System::Windows::Forms::Button^  button3;
 			// lba3
 			// 
 			this->lba3->AutoSize = true;
-			this->lba3->Location = System::Drawing::Point(30, 57);
+			this->lba3->Location = System::Drawing::Point(30, 61);
 			this->lba3->Name = L"lba3";
 			this->lba3->Size = System::Drawing::Size(84, 13);
 			this->lba3->TabIndex = 2;
@@ -263,47 +272,17 @@ private: System::Windows::Forms::Button^  button3;
 			// lbdr1
 			// 
 			this->lbdr1->AutoSize = true;
-			this->lbdr1->Location = System::Drawing::Point(30, 74);
+			this->lbdr1->Location = System::Drawing::Point(30, 87);
 			this->lbdr1->Name = L"lbdr1";
-			this->lbdr1->Size = System::Drawing::Size(85, 13);
+			this->lbdr1->Size = System::Drawing::Size(76, 13);
 			this->lbdr1->TabIndex = 3;
-			this->lbdr1->Text = L"Doppler Radar 1";
+			this->lbdr1->Text = L"Doppler Radar";
 			this->lbdr1->Click += gcnew System::EventHandler(this, &Form1::lbdr1_Click);
-			// 
-			// lbdr2
-			// 
-			this->lbdr2->AutoSize = true;
-			this->lbdr2->Location = System::Drawing::Point(30, 97);
-			this->lbdr2->Name = L"lbdr2";
-			this->lbdr2->Size = System::Drawing::Size(85, 13);
-			this->lbdr2->TabIndex = 4;
-			this->lbdr2->Text = L"Doppler Radar 2";
-			this->lbdr2->Click += gcnew System::EventHandler(this, &Form1::lbdr2_Click);
-			// 
-			// lbdr3
-			// 
-			this->lbdr3->AutoSize = true;
-			this->lbdr3->Location = System::Drawing::Point(30, 119);
-			this->lbdr3->Name = L"lbdr3";
-			this->lbdr3->Size = System::Drawing::Size(85, 13);
-			this->lbdr3->TabIndex = 5;
-			this->lbdr3->Text = L"Doppler Radar 3";
-			this->lbdr3->Click += gcnew System::EventHandler(this, &Form1::label6_Click);
-			// 
-			// lbdr4
-			// 
-			this->lbdr4->AutoSize = true;
-			this->lbdr4->Location = System::Drawing::Point(30, 138);
-			this->lbdr4->Name = L"lbdr4";
-			this->lbdr4->Size = System::Drawing::Size(85, 13);
-			this->lbdr4->TabIndex = 6;
-			this->lbdr4->Text = L"Doppler Radar 4";
-			this->lbdr4->Click += gcnew System::EventHandler(this, &Form1::lbdr4_Click);
 			// 
 			// lbar
 			// 
 			this->lbar->AutoSize = true;
-			this->lbar->Location = System::Drawing::Point(30, 154);
+			this->lbar->Location = System::Drawing::Point(30, 113);
 			this->lbar->Name = L"lbar";
 			this->lbar->Size = System::Drawing::Size(74, 13);
 			this->lbar->TabIndex = 7;
@@ -313,57 +292,47 @@ private: System::Windows::Forms::Button^  button3;
 			// lbtts1
 			// 
 			this->lbtts1->AutoSize = true;
-			this->lbtts1->Location = System::Drawing::Point(30, 173);
+			this->lbtts1->Location = System::Drawing::Point(30, 139);
 			this->lbtts1->Name = L"lbtts1";
-			this->lbtts1->Size = System::Drawing::Size(110, 13);
+			this->lbtts1->Size = System::Drawing::Size(30, 13);
 			this->lbtts1->TabIndex = 8;
-			this->lbtts1->Text = L"Temperature sensor 1";
+			this->lbtts1->Text = L"Time";
 			this->lbtts1->Click += gcnew System::EventHandler(this, &Form1::lbtts1_Click);
-			// 
-			// lbts2
-			// 
-			this->lbts2->AutoSize = true;
-			this->lbts2->Location = System::Drawing::Point(30, 193);
-			this->lbts2->Name = L"lbts2";
-			this->lbts2->Size = System::Drawing::Size(110, 13);
-			this->lbts2->TabIndex = 9;
-			this->lbts2->Text = L"Temperature sensor 2";
-			this->lbts2->Click += gcnew System::EventHandler(this, &Form1::lbts2_Click);
 			// 
 			// lbsg1
 			// 
 			this->lbsg1->AutoSize = true;
-			this->lbsg1->Location = System::Drawing::Point(30, 216);
+			this->lbsg1->Location = System::Drawing::Point(31, 165);
 			this->lbsg1->Name = L"lbsg1";
-			this->lbsg1->Size = System::Drawing::Size(137, 13);
+			this->lbsg1->Size = System::Drawing::Size(138, 13);
 			this->lbsg1->TabIndex = 10;
-			this->lbsg1->Text = L"Strappeddown gyroscope 1";
+			this->lbsg1->Text = L"Strappeddown gyroscope P";
 			this->lbsg1->Click += gcnew System::EventHandler(this, &Form1::lbsg1_Click);
 			// 
 			// lbsg2
 			// 
 			this->lbsg2->AutoSize = true;
-			this->lbsg2->Location = System::Drawing::Point(30, 235);
+			this->lbsg2->Location = System::Drawing::Point(30, 191);
 			this->lbsg2->Name = L"lbsg2";
-			this->lbsg2->Size = System::Drawing::Size(137, 13);
+			this->lbsg2->Size = System::Drawing::Size(139, 13);
 			this->lbsg2->TabIndex = 11;
-			this->lbsg2->Text = L"Strappeddown gyroscope 2";
+			this->lbsg2->Text = L"Strappeddown gyroscope Q";
 			this->lbsg2->Click += gcnew System::EventHandler(this, &Form1::lbsg2_Click);
 			// 
 			// lbsg3
 			// 
 			this->lbsg3->AutoSize = true;
-			this->lbsg3->Location = System::Drawing::Point(30, 251);
+			this->lbsg3->Location = System::Drawing::Point(30, 217);
 			this->lbsg3->Name = L"lbsg3";
-			this->lbsg3->Size = System::Drawing::Size(137, 13);
+			this->lbsg3->Size = System::Drawing::Size(139, 13);
 			this->lbsg3->TabIndex = 12;
-			this->lbsg3->Text = L"Strappeddown gyroscope 3";
+			this->lbsg3->Text = L"Strappeddown gyroscope R";
 			this->lbsg3->Click += gcnew System::EventHandler(this, &Form1::lbsg3_Click);
 			// 
 			// lbore1
 			// 
 			this->lbore1->AutoSize = true;
-			this->lbore1->Location = System::Drawing::Point(30, 267);
+			this->lbore1->Location = System::Drawing::Point(30, 243);
 			this->lbore1->Name = L"lbore1";
 			this->lbore1->Size = System::Drawing::Size(110, 13);
 			this->lbore1->TabIndex = 13;
@@ -373,7 +342,7 @@ private: System::Windows::Forms::Button^  button3;
 			// lbore2
 			// 
 			this->lbore2->AutoSize = true;
-			this->lbore2->Location = System::Drawing::Point(30, 293);
+			this->lbore2->Location = System::Drawing::Point(30, 269);
 			this->lbore2->Name = L"lbore2";
 			this->lbore2->Size = System::Drawing::Size(110, 13);
 			this->lbore2->TabIndex = 14;
@@ -383,7 +352,7 @@ private: System::Windows::Forms::Button^  button3;
 			// lbore3
 			// 
 			this->lbore3->AutoSize = true;
-			this->lbore3->Location = System::Drawing::Point(30, 310);
+			this->lbore3->Location = System::Drawing::Point(30, 295);
 			this->lbore3->Name = L"lbore3";
 			this->lbore3->Size = System::Drawing::Size(110, 13);
 			this->lbore3->TabIndex = 15;
@@ -393,7 +362,7 @@ private: System::Windows::Forms::Button^  button3;
 			// lbate1
 			// 
 			this->lbate1->AutoSize = true;
-			this->lbate1->Location = System::Drawing::Point(30, 336);
+			this->lbate1->Location = System::Drawing::Point(30, 321);
 			this->lbate1->Name = L"lbate1";
 			this->lbate1->Size = System::Drawing::Size(102, 13);
 			this->lbate1->TabIndex = 16;
@@ -410,153 +379,107 @@ private: System::Windows::Forms::Button^  button3;
 			// 
 			// txta1
 			// 
-			this->txta1->Location = System::Drawing::Point(186, 12);
+			this->txta1->Location = System::Drawing::Point(186, 6);
 			this->txta1->Name = L"txta1";
-			this->txta1->ReadOnly = true;
 			this->txta1->Size = System::Drawing::Size(100, 20);
 			this->txta1->TabIndex = 18;
 			this->txta1->TextChanged += gcnew System::EventHandler(this, &Form1::txta1_TextChanged);
 			// 
 			// txta2
 			// 
-			this->txta2->Location = System::Drawing::Point(186, 35);
+			this->txta2->Location = System::Drawing::Point(186, 32);
 			this->txta2->Name = L"txta2";
-			this->txta2->ReadOnly = true;
 			this->txta2->Size = System::Drawing::Size(100, 20);
 			this->txta2->TabIndex = 19;
 			// 
 			// txta3
 			// 
-			this->txta3->Location = System::Drawing::Point(186, 57);
+			this->txta3->Location = System::Drawing::Point(186, 58);
 			this->txta3->Name = L"txta3";
-			this->txta3->ReadOnly = true;
 			this->txta3->Size = System::Drawing::Size(100, 20);
 			this->txta3->TabIndex = 20;
 			// 
 			// txtdr1
 			// 
-			this->txtdr1->Location = System::Drawing::Point(186, 77);
+			this->txtdr1->Location = System::Drawing::Point(186, 84);
 			this->txtdr1->Name = L"txtdr1";
-			this->txtdr1->ReadOnly = true;
 			this->txtdr1->Size = System::Drawing::Size(100, 20);
 			this->txtdr1->TabIndex = 21;
 			// 
-			// txtdr2
-			// 
-			this->txtdr2->Location = System::Drawing::Point(186, 99);
-			this->txtdr2->Name = L"txtdr2";
-			this->txtdr2->ReadOnly = true;
-			this->txtdr2->Size = System::Drawing::Size(100, 20);
-			this->txtdr2->TabIndex = 22;
-			// 
-			// txtdr4
-			// 
-			this->txtdr4->Location = System::Drawing::Point(186, 141);
-			this->txtdr4->Name = L"txtdr4";
-			this->txtdr4->ReadOnly = true;
-			this->txtdr4->Size = System::Drawing::Size(100, 20);
-			this->txtdr4->TabIndex = 23;
-			// 
-			// txtdr3
-			// 
-			this->txtdr3->Location = System::Drawing::Point(186, 122);
-			this->txtdr3->Name = L"txtdr3";
-			this->txtdr3->ReadOnly = true;
-			this->txtdr3->Size = System::Drawing::Size(100, 20);
-			this->txtdr3->TabIndex = 24;
-			// 
 			// txtar
 			// 
-			this->txtar->Location = System::Drawing::Point(186, 157);
+			this->txtar->Location = System::Drawing::Point(186, 110);
 			this->txtar->Name = L"txtar";
-			this->txtar->ReadOnly = true;
 			this->txtar->Size = System::Drawing::Size(100, 20);
 			this->txtar->TabIndex = 25;
 			// 
-			// txtts1
+			// txttime
 			// 
-			this->txtts1->Location = System::Drawing::Point(186, 176);
-			this->txtts1->Name = L"txtts1";
-			this->txtts1->ReadOnly = true;
-			this->txtts1->Size = System::Drawing::Size(100, 20);
-			this->txtts1->TabIndex = 26;
-			// 
-			// txtts2
-			// 
-			this->txtts2->Location = System::Drawing::Point(186, 196);
-			this->txtts2->Name = L"txtts2";
-			this->txtts2->ReadOnly = true;
-			this->txtts2->Size = System::Drawing::Size(100, 20);
-			this->txtts2->TabIndex = 27;
+			this->txttime->Location = System::Drawing::Point(186, 136);
+			this->txttime->Name = L"txttime";
+			this->txttime->Size = System::Drawing::Size(100, 20);
+			this->txttime->TabIndex = 26;
 			// 
 			// txtsg1
 			// 
-			this->txtsg1->Location = System::Drawing::Point(186, 216);
+			this->txtsg1->Location = System::Drawing::Point(186, 162);
 			this->txtsg1->Name = L"txtsg1";
-			this->txtsg1->ReadOnly = true;
 			this->txtsg1->Size = System::Drawing::Size(100, 20);
 			this->txtsg1->TabIndex = 28;
 			this->txtsg1->TextChanged += gcnew System::EventHandler(this, &Form1::txtsg1_TextChanged);
 			// 
 			// txtsg2
 			// 
-			this->txtsg2->Location = System::Drawing::Point(186, 235);
+			this->txtsg2->Location = System::Drawing::Point(186, 188);
 			this->txtsg2->Name = L"txtsg2";
-			this->txtsg2->ReadOnly = true;
 			this->txtsg2->Size = System::Drawing::Size(100, 20);
 			this->txtsg2->TabIndex = 29;
 			this->txtsg2->TextChanged += gcnew System::EventHandler(this, &Form1::textBox12_TextChanged);
 			// 
 			// txtsg3
 			// 
-			this->txtsg3->Location = System::Drawing::Point(186, 254);
+			this->txtsg3->Location = System::Drawing::Point(186, 214);
 			this->txtsg3->Name = L"txtsg3";
-			this->txtsg3->ReadOnly = true;
 			this->txtsg3->Size = System::Drawing::Size(100, 20);
 			this->txtsg3->TabIndex = 30;
 			this->txtsg3->TextChanged += gcnew System::EventHandler(this, &Form1::txtsg3_TextChanged);
 			// 
 			// txtore1
 			// 
-			this->txtore1->Location = System::Drawing::Point(186, 270);
+			this->txtore1->Location = System::Drawing::Point(186, 240);
 			this->txtore1->Name = L"txtore1";
-			this->txtore1->ReadOnly = true;
 			this->txtore1->Size = System::Drawing::Size(100, 20);
 			this->txtore1->TabIndex = 31;
 			this->txtore1->TextChanged += gcnew System::EventHandler(this, &Form1::txtore1_TextChanged);
 			// 
 			// txtore2
 			// 
-			this->txtore2->Location = System::Drawing::Point(186, 292);
+			this->txtore2->Location = System::Drawing::Point(186, 266);
 			this->txtore2->Name = L"txtore2";
-			this->txtore2->ReadOnly = true;
 			this->txtore2->Size = System::Drawing::Size(100, 20);
 			this->txtore2->TabIndex = 32;
 			this->txtore2->TextChanged += gcnew System::EventHandler(this, &Form1::txtore2_TextChanged);
 			// 
 			// txtore3
 			// 
-			this->txtore3->Location = System::Drawing::Point(186, 313);
+			this->txtore3->Location = System::Drawing::Point(186, 292);
 			this->txtore3->Name = L"txtore3";
-			this->txtore3->ReadOnly = true;
 			this->txtore3->Size = System::Drawing::Size(100, 20);
 			this->txtore3->TabIndex = 33;
 			this->txtore3->TextChanged += gcnew System::EventHandler(this, &Form1::txtore3_TextChanged);
 			// 
 			// txtate1
 			// 
-			this->txtate1->Location = System::Drawing::Point(186, 334);
+			this->txtate1->Location = System::Drawing::Point(186, 318);
 			this->txtate1->Name = L"txtate1";
-			this->txtate1->ReadOnly = true;
 			this->txtate1->Size = System::Drawing::Size(100, 20);
 			this->txtate1->TabIndex = 34;
 			this->txtate1->TextChanged += gcnew System::EventHandler(this, &Form1::txtate1_TextChanged);
 			// 
 			// txtate2
 			// 
-			this->txtate2->Location = System::Drawing::Point(186, 357);
+			this->txtate2->Location = System::Drawing::Point(186, 344);
 			this->txtate2->Name = L"txtate2";
-			this->txtate2->ReadOnly = true;
 			this->txtate2->Size = System::Drawing::Size(100, 20);
 			this->txtate2->TabIndex = 35;
 			this->txtate2->TextChanged += gcnew System::EventHandler(this, &Form1::txtate2_TextChanged);
@@ -564,7 +487,7 @@ private: System::Windows::Forms::Button^  button3;
 			// lbate2
 			// 
 			this->lbate2->AutoSize = true;
-			this->lbate2->Location = System::Drawing::Point(30, 360);
+			this->lbate2->Location = System::Drawing::Point(31, 347);
 			this->lbate2->Name = L"lbate2";
 			this->lbate2->Size = System::Drawing::Size(102, 13);
 			this->lbate2->TabIndex = 36;
@@ -574,7 +497,7 @@ private: System::Windows::Forms::Button^  button3;
 			// lbate3
 			// 
 			this->lbate3->AutoSize = true;
-			this->lbate3->Location = System::Drawing::Point(30, 384);
+			this->lbate3->Location = System::Drawing::Point(30, 373);
 			this->lbate3->Name = L"lbate3";
 			this->lbate3->Size = System::Drawing::Size(102, 13);
 			this->lbate3->TabIndex = 37;
@@ -584,7 +507,7 @@ private: System::Windows::Forms::Button^  button3;
 			// lbpra
 			// 
 			this->lbpra->AutoSize = true;
-			this->lbpra->Location = System::Drawing::Point(30, 401);
+			this->lbpra->Location = System::Drawing::Point(30, 399);
 			this->lbpra->Name = L"lbpra";
 			this->lbpra->Size = System::Drawing::Size(135, 13);
 			this->lbpra->TabIndex = 38;
@@ -593,27 +516,24 @@ private: System::Windows::Forms::Button^  button3;
 			// 
 			// txtate3
 			// 
-			this->txtate3->Location = System::Drawing::Point(186, 380);
+			this->txtate3->Location = System::Drawing::Point(186, 370);
 			this->txtate3->Name = L"txtate3";
-			this->txtate3->ReadOnly = true;
 			this->txtate3->Size = System::Drawing::Size(100, 20);
 			this->txtate3->TabIndex = 39;
 			this->txtate3->TextChanged += gcnew System::EventHandler(this, &Form1::txtate3_TextChanged);
 			// 
 			// txtpra
 			// 
-			this->txtpra->Location = System::Drawing::Point(186, 404);
+			this->txtpra->Location = System::Drawing::Point(186, 396);
 			this->txtpra->Name = L"txtpra";
-			this->txtpra->ReadOnly = true;
 			this->txtpra->Size = System::Drawing::Size(100, 20);
 			this->txtpra->TabIndex = 40;
 			this->txtpra->TextChanged += gcnew System::EventHandler(this, &Form1::txtpra_TextChanged);
 			// 
 			// txtts
 			// 
-			this->txtts->Location = System::Drawing::Point(186, 428);
+			this->txtts->Location = System::Drawing::Point(186, 422);
 			this->txtts->Name = L"txtts";
-			this->txtts->ReadOnly = true;
 			this->txtts->Size = System::Drawing::Size(100, 20);
 			this->txtts->TabIndex = 41;
 			this->txtts->TextChanged += gcnew System::EventHandler(this, &Form1::txtts_TextChanged);
@@ -628,41 +548,51 @@ private: System::Windows::Forms::Button^  button3;
 			this->lbts->Text = L"Touchdown sensor";
 			this->lbts->Click += gcnew System::EventHandler(this, &Form1::lbts_Click);
 			// 
-			// button1
+			// Start
 			// 
-			this->button1->Location = System::Drawing::Point(326, 63);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(75, 23);
-			this->button1->TabIndex = 43;
-			this->button1->Text = L"button1";
-			this->button1->UseVisualStyleBackColor = true;
+			this->Start->Location = System::Drawing::Point(326, 63);
+			this->Start->Name = L"Start";
+			this->Start->Size = System::Drawing::Size(75, 23);
+			this->Start->TabIndex = 43;
+			this->Start->Text = L"Start";
+			this->Start->UseVisualStyleBackColor = true;
+			this->Start->Click += gcnew System::EventHandler(this, &Form1::button1_Click);
 			// 
-			// button2
+			// Slow
 			// 
-			this->button2->Location = System::Drawing::Point(326, 97);
-			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(75, 23);
-			this->button2->TabIndex = 44;
-			this->button2->Text = L"button2";
-			this->button2->UseVisualStyleBackColor = true;
+			this->Slow->Location = System::Drawing::Point(326, 97);
+			this->Slow->Name = L"Slow";
+			this->Slow->Size = System::Drawing::Size(75, 23);
+			this->Slow->TabIndex = 44;
+			this->Slow->Text = L"Slow";
+			this->Slow->UseVisualStyleBackColor = true;
 			// 
-			// button3
+			// Pause
 			// 
-			this->button3->Location = System::Drawing::Point(326, 128);
-			this->button3->Name = L"button3";
-			this->button3->Size = System::Drawing::Size(75, 23);
-			this->button3->TabIndex = 45;
-			this->button3->Text = L"button3";
-			this->button3->UseVisualStyleBackColor = true;
+			this->Pause->Location = System::Drawing::Point(326, 128);
+			this->Pause->Name = L"Pause";
+			this->Pause->Size = System::Drawing::Size(75, 23);
+			this->Pause->TabIndex = 45;
+			this->Pause->Text = L"Pause";
+			this->Pause->UseVisualStyleBackColor = true;
+			// 
+			// backgroundWorker1
+			// 
+			this->backgroundWorker1->WorkerReportsProgress = true;
+			this->backgroundWorker1->WorkerSupportsCancellation = true;
+			this->backgroundWorker1->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &Form1::backgroundWorker1_DoWork);
+			this->backgroundWorker1->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &Form1::backgroundWorker1_ProgressChanged);
+			this->backgroundWorker1->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &Form1::backgroundWorker1_RunWorkerCompleted);
 			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(497, 483);
-			this->Controls->Add(this->button3);
-			this->Controls->Add(this->button2);
-			this->Controls->Add(this->button1);
+			this->Controls->Add(this->txta2);
+			this->Controls->Add(this->Pause);
+			this->Controls->Add(this->Slow);
+			this->Controls->Add(this->Start);
 			this->Controls->Add(this->lbts);
 			this->Controls->Add(this->txtts);
 			this->Controls->Add(this->txtpra);
@@ -678,15 +608,10 @@ private: System::Windows::Forms::Button^  button3;
 			this->Controls->Add(this->txtsg3);
 			this->Controls->Add(this->txtsg2);
 			this->Controls->Add(this->txtsg1);
-			this->Controls->Add(this->txtts2);
-			this->Controls->Add(this->txtts1);
+			this->Controls->Add(this->txttime);
 			this->Controls->Add(this->txtar);
-			this->Controls->Add(this->txtdr3);
-			this->Controls->Add(this->txtdr4);
-			this->Controls->Add(this->txtdr2);
 			this->Controls->Add(this->txtdr1);
 			this->Controls->Add(this->txta3);
-			this->Controls->Add(this->txta2);
 			this->Controls->Add(this->txta1);
 			this->Controls->Add(this->label18);
 			this->Controls->Add(this->lbate1);
@@ -696,18 +621,16 @@ private: System::Windows::Forms::Button^  button3;
 			this->Controls->Add(this->lbsg3);
 			this->Controls->Add(this->lbsg2);
 			this->Controls->Add(this->lbsg1);
-			this->Controls->Add(this->lbts2);
 			this->Controls->Add(this->lbtts1);
 			this->Controls->Add(this->lbar);
-			this->Controls->Add(this->lbdr4);
-			this->Controls->Add(this->lbdr3);
-			this->Controls->Add(this->lbdr2);
 			this->Controls->Add(this->lbdr1);
 			this->Controls->Add(this->lba3);
 			this->Controls->Add(this->lba2);
 			this->Controls->Add(this->lba1);
 			this->Name = L"Form1";
 			this->Text = L"Form1";
+			this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &Form1::Form1_FormClosing);
+			this->Load += gcnew System::EventHandler(this, &Form1::Form1_Load);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -779,6 +702,65 @@ private: System::Void lbts_Click(System::Object^  sender, System::EventArgs^  e)
 private: System::Void txtts_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 		 }
 private: System::Void txta1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+	backgroundWorker1->RunWorkerAsync(1);
+}
+private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e) {
+	while (!closing)
+	{
+		simulation->update();
+		if (simulation->getLanderTime() % 100 == 0)
+		{
+			backgroundWorker1->ReportProgress(0);
+		}
+	}
+}
+private: System::Void backgroundWorker1_ProgressChanged(System::Object^  sender, System::ComponentModel::ProgressChangedEventArgs^  e) {
+	txta1->Text = "" + simulation->getXaccel();
+	txta2->Text = "" + simulation->getYaccel();
+	txta3->Text = "" + simulation->getZaccel();
+	
+	txtdr1->Text = "" + simulation->getVelocity();
+
+	txtar->Text = "" + simulation->getYpos();
+
+	txttime->Text = "" + simulation->getLanderTime()/1000;
+	
+	txtsg1->Text = "" + simulation->getPangle() / 3.14159265 * 180;
+	txtsg2->Text = "" + simulation->getQangle() / 3.14159265 * 180;
+	txtsg3->Text = "" + simulation->getRangle() / 3.14159265 * 180;
+
+	txtore1->Text = "" + simulation->getThrust(3);
+	txtore2->Text = "" + simulation->getThrust(4);
+	txtore3->Text = "" + simulation->getThrust(5);
+
+	txtate1->Text = "" + simulation->getThrust(0);
+	txtate2->Text = "" + simulation->getThrust(1);
+	txtate3->Text = "" + simulation->getThrust(2);
+
+
+	if(simulation->getLanded() == 1)
+		txtts->Text = "landed";
+	else if (simulation->getLanded() == -1)
+		txtts->Text = "crashed";
+	else
+		txtts->Text = "flying";
+
+}
+private: System::Void Form1_FormClosing(System::Object^  sender, System::Windows::Forms::FormClosingEventArgs^  e) {
+	if (backgroundWorker1->IsBusy)
+	{
+		closing = true;
+		backgroundWorker1->CancelAsync();
+		e->Cancel = true;
+		Enabled = false;
+	}
+}
+private: System::Void backgroundWorker1_RunWorkerCompleted(System::Object^  sender, System::ComponentModel::RunWorkerCompletedEventArgs^  e) {
+	this->Close();
 }
 };
 }

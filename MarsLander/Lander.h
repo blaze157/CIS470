@@ -27,6 +27,14 @@ private:
 	double previousP;
 	double previousQ;
 	double previousR;
+	double previousXvel;
+	double previousYvel;
+	double previousZvel;
+
+	double lastForce[6];
+	double Xaccel;
+	double Yaccel;
+	double Zaccel;
 
 	int stage;
 
@@ -60,7 +68,14 @@ public:
 	double getAltitude();//height measured from lander feet
 
 	unsigned int getTime();
-	
+
+	int getLanded();
+
+	double getThrust(int engine);
+	double getXaccel();
+	double getYaccel();
+	double getZaccel();
+
 	void flightController();
 
 	void update();

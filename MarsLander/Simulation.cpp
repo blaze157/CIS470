@@ -59,6 +59,31 @@ double Simulation::getVelocityQangle()
 	return lander->getVelocityQangle();
 }
 
+int Simulation::getLanded()
+{
+	return lander->getLanded();
+}
+
+double Simulation::getThrust(int engine)
+{
+	return lander->getThrust(engine);
+}
+
+double Simulation::getXaccel()
+{
+	return lander->getXaccel();
+}
+
+double Simulation::getYaccel()
+{
+	return lander->getYaccel();
+}
+
+double Simulation::getZaccel()
+{
+	return lander->getZaccel();
+}
+
 unsigned int Simulation::getLanderTime()
 {
 	return lander->getTime();

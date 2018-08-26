@@ -134,10 +134,11 @@ Lander::Lander()
 	lastForce[4] = 0;
 	lastForce[5] = 0;
 
+	downTime = 0;
 	landed = 0;
 
 	connector = 0;
-	//connector = new SQLConnector(L"cis470.c7yjsuncshex.us-east-1.rds.amazonaws.com", L"MarsLander", L"12345678");
+	connector = new SQLConnector(L"cis470.c7yjsuncshex.us-east-1.rds.amazonaws.com", L"MarsLander", L"12345678");
 }
 
 
@@ -175,7 +176,22 @@ void Lander::setVelocity(double xvel, double yvel, double zvel)
 
 void Lander::sendData()
 {
-	connector->execute(L"some sql code");
+	connector->execute(L"execute position_sp @longitude = N'" + std::to_wstring(getXpos())
+		+ L"', @londirection = N'" + ((getPangle() > 0) ? L"E" : L"W")
+		+ L"', @latdirection = N'" + ((getPangle() < pi/2 && getPangle() > -pi / 2) ? L"N" : L"S") + L"';");
+
+	connector->execute(L"execute movement_sp @xacceleration = N'" + std::to_wstring(getXaccel())
+		+ L"', @yacceleration = N'" + std::to_wstring(getYaccel()) + L"', @zacceleration = N'" + std::to_wstring(getZaccel())
+		+ L"', @velocity = N'" + std::to_wstring(getVelocity()) + L"', @logtime = N'" + std::to_wstring(time) + L"';");
+
+	if (landed == 1)
+	{
+		connector->execute(L"execute weather_sp @windmph = N'" + std::to_wstring(0)//This would be somthing else but I didn't have time for wind
+			+ L"', @precipitation = N'" + std::to_wstring(0) + L"', @hummidity = N'" + std::to_wstring(0)//um we're on mars
+			+ L"', @duepoint = N'" + std::to_wstring(-1000) + L"', @temp = N'" + std::to_wstring((rand()%70)-85-35) + L"';");
+		connector->execute(L"execute soilsample_sp @soiltype = N'sand', @sampleweight = N'" + std::to_wstring(1) + L"', @color = N'orange"
+			+ L"', @composition = N'iron oxide';");
+	}
 }
 
 double Lander::getPangle()
@@ -607,9 +623,10 @@ void Lander::flightController()
 		break;
 	}
 
-	time++;
+	if(time%1000 == 0)
+	sendData();
 
-	//sendData();
+	time++;
 }
 
 void Lander::update()
@@ -639,14 +656,20 @@ void Lander::update()
 	double groundForce;
 	if (nodes[14]->getY() < 0 && nodes[14]->getYVelocity() < 0)
 	{
-		groundForce = -nodes[14]->getY() * 3000 + 400;
-		if (groundForce > 3000)
+		groundForce = nodes[14]->getY() * 3000 + 400;
+		if (downTime == 0)
+			downTime = time;
+		if (time - downTime > 1000 && landed == 0)
+		{
+			landed = 1;
+		}
+		if (groundForce > 3000 && landed == 0)
 		{
 			landed = -1;
 		}
-		if (nodes[14]->getXVelocity() > 0)
+		if (nodes[14]->getXVelocity() >= 0)
 		{
-			if (nodes[14]->getZVelocity() > 0)
+			if (nodes[14]->getZVelocity() >= 0)
 				nodes[14]->force(-groundForce / 2, groundForce, -groundForce / 2);
 			if (nodes[14]->getZVelocity() < 0)
 				nodes[14]->force(-groundForce / 2, groundForce, groundForce / 2);
@@ -662,14 +685,20 @@ void Lander::update()
 
 	if (nodes[15]->getY() < 0 && nodes[15]->getYVelocity() < 0)
 	{
-		groundForce = -nodes[15]->getY() * 3000 + 400;
-		if (groundForce > 3000)
+		groundForce = nodes[15]->getY() * 3000 + 400;
+		if(downTime == 0)
+			downTime = time;
+		if (time - downTime > 1000 && landed == 0)
+		{
+			landed = 1;
+		}
+		if (groundForce > 3000 && landed == 0)
 		{
 			landed = -1;
 		}
-		if (nodes[15]->getXVelocity() > 0)
+		if (nodes[15]->getXVelocity() >= 0)
 		{
-			if (nodes[15]->getZVelocity() > 0)
+			if (nodes[15]->getZVelocity() >= 0)
 				nodes[15]->force(-groundForce / 2, groundForce, -groundForce / 2);
 			if (nodes[15]->getZVelocity() < 0)
 				nodes[15]->force(-groundForce / 2, groundForce, groundForce / 2);
@@ -685,14 +714,20 @@ void Lander::update()
 
 	if (nodes[16]->getY() < 0 && nodes[16]->getYVelocity() < 0)
 	{
-		groundForce = -nodes[16]->getY() * 3000 + 400;
-		if (groundForce > 3000)
+		groundForce = nodes[16]->getY() * 3000 + 400;
+		if (downTime == 0)
+			downTime = time;
+		if (time - downTime > 1000 && landed == 0)
+		{
+			landed = 1;
+		}
+		if (groundForce > 3000 && landed == 0)
 		{
 			landed = -1;
 		}
-		if (nodes[16]->getXVelocity() > 0)
+		if (nodes[16]->getXVelocity() >= 0)
 		{
-			if (nodes[16]->getZVelocity() > 0)
+			if (nodes[16]->getZVelocity() >= 0)
 				nodes[16]->force(-groundForce / 2, groundForce, -groundForce / 2);
 			if (nodes[16]->getZVelocity() < 0)
 				nodes[16]->force(-groundForce / 2, groundForce, groundForce / 2);

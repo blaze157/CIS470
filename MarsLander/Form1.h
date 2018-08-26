@@ -21,13 +21,19 @@ namespace MarsLander1 {
 
 		int speed;
 		bool closing;
-		System::ComponentModel::BackgroundWorker^  backgroundWorker1;
+		bool runing;
+	private: System::Windows::Forms::Label^  label1;
+	private: System::Windows::Forms::Label^  label2;
+	private: System::Windows::Forms::TextBox^  txtStartA;
+	private: System::Windows::Forms::TextBox^  txtStartV;
+			 System::ComponentModel::BackgroundWorker^  backgroundWorker1;
 
 	public:
 		Form1(void)
 		{
 			closing = false;
-			simulation = new Simulation(0, 10000, 0, 0, 0, 0, 1000, -100);
+			runing = false;
+			simulation = 0;
 			InitializeComponent();
 		}
 
@@ -175,8 +181,8 @@ private: System::Windows::Forms::TextBox^  txtpra;
 private: System::Windows::Forms::TextBox^  txtts;
 private: System::Windows::Forms::Label^  lbts;
 private: System::Windows::Forms::Button^  Start;
-private: System::Windows::Forms::Button^  Slow;
-private: System::Windows::Forms::Button^  Pause;
+
+
 
 
 
@@ -234,9 +240,11 @@ private: System::Windows::Forms::Button^  Pause;
 			this->txtts = (gcnew System::Windows::Forms::TextBox());
 			this->lbts = (gcnew System::Windows::Forms::Label());
 			this->Start = (gcnew System::Windows::Forms::Button());
-			this->Slow = (gcnew System::Windows::Forms::Button());
-			this->Pause = (gcnew System::Windows::Forms::Button());
 			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->txtStartA = (gcnew System::Windows::Forms::TextBox());
+			this->txtStartV = (gcnew System::Windows::Forms::TextBox());
 			this->SuspendLayout();
 			// 
 			// lba1
@@ -550,31 +558,13 @@ private: System::Windows::Forms::Button^  Pause;
 			// 
 			// Start
 			// 
-			this->Start->Location = System::Drawing::Point(326, 63);
+			this->Start->Location = System::Drawing::Point(352, 420);
 			this->Start->Name = L"Start";
 			this->Start->Size = System::Drawing::Size(75, 23);
 			this->Start->TabIndex = 43;
 			this->Start->Text = L"Start";
 			this->Start->UseVisualStyleBackColor = true;
 			this->Start->Click += gcnew System::EventHandler(this, &Form1::button1_Click);
-			// 
-			// Slow
-			// 
-			this->Slow->Location = System::Drawing::Point(326, 97);
-			this->Slow->Name = L"Slow";
-			this->Slow->Size = System::Drawing::Size(75, 23);
-			this->Slow->TabIndex = 44;
-			this->Slow->Text = L"Slow";
-			this->Slow->UseVisualStyleBackColor = true;
-			// 
-			// Pause
-			// 
-			this->Pause->Location = System::Drawing::Point(326, 128);
-			this->Pause->Name = L"Pause";
-			this->Pause->Size = System::Drawing::Size(75, 23);
-			this->Pause->TabIndex = 45;
-			this->Pause->Text = L"Pause";
-			this->Pause->UseVisualStyleBackColor = true;
 			// 
 			// backgroundWorker1
 			// 
@@ -584,14 +574,48 @@ private: System::Windows::Forms::Button^  Pause;
 			this->backgroundWorker1->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &Form1::backgroundWorker1_ProgressChanged);
 			this->backgroundWorker1->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &Form1::backgroundWorker1_RunWorkerCompleted);
 			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(292, 347);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(66, 13);
+			this->label1->TabIndex = 44;
+			this->label1->Text = L"Start altitude";
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(292, 373);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(69, 13);
+			this->label2->TabIndex = 45;
+			this->label2->Text = L"Start Velocity";
+			// 
+			// txtStartA
+			// 
+			this->txtStartA->Location = System::Drawing::Point(367, 344);
+			this->txtStartA->Name = L"txtStartA";
+			this->txtStartA->Size = System::Drawing::Size(100, 20);
+			this->txtStartA->TabIndex = 46;
+			// 
+			// txtStartV
+			// 
+			this->txtStartV->Location = System::Drawing::Point(367, 370);
+			this->txtStartV->Name = L"txtStartV";
+			this->txtStartV->Size = System::Drawing::Size(100, 20);
+			this->txtStartV->TabIndex = 47;
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(497, 483);
+			this->Controls->Add(this->txtStartV);
+			this->Controls->Add(this->txtStartA);
+			this->Controls->Add(this->label2);
+			this->Controls->Add(this->label1);
 			this->Controls->Add(this->txta2);
-			this->Controls->Add(this->Pause);
-			this->Controls->Add(this->Slow);
 			this->Controls->Add(this->Start);
 			this->Controls->Add(this->lbts);
 			this->Controls->Add(this->txtts);
@@ -704,17 +728,31 @@ private: System::Void txtts_TextChanged(System::Object^  sender, System::EventAr
 private: System::Void txta1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 }
 private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-	backgroundWorker1->RunWorkerAsync(1);
+	double alt = Convert::ToDouble(txtStartA->Text);
+	double vel = Convert::ToDouble(txtStartV->Text);
+
+	if (alt != 0 && !backgroundWorker1->IsBusy)
+	{
+		if (simulation)
+		{
+			delete simulation;
+		}
+		simulation = new Simulation(0, alt, 0, 0, 0, 0, vel, 0);
+		backgroundWorker1->RunWorkerAsync(1);
+	}
 }
 private: System::Void Form1_Load(System::Object^  sender, System::EventArgs^  e) {
 }
 private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e) {
-	while (!closing)
+	if (!runing)
 	{
-		simulation->update();
-		if (simulation->getLanderTime() % 100 == 0)
+		runing = true;
+		while (!closing && simulation->getLanded() == 0 || simulation->getLanderTime() % 1000 != 1)
 		{
-			backgroundWorker1->ReportProgress(0);
+			simulation->update();
+			if (simulation->getLanderTime() % 100 == 0)		{
+				backgroundWorker1->ReportProgress(0);
+			}
 		}
 	}
 }
@@ -760,6 +798,7 @@ private: System::Void Form1_FormClosing(System::Object^  sender, System::Windows
 	}
 }
 private: System::Void backgroundWorker1_RunWorkerCompleted(System::Object^  sender, System::ComponentModel::RunWorkerCompletedEventArgs^  e) {
+	if (closing)
 	this->Close();
 }
 };

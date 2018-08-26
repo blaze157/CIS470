@@ -38,6 +38,7 @@ private:
 
 	int stage;
 
+	int downTime;
 	int landed;
 
 public:

@@ -84,6 +84,11 @@ double Simulation::getZaccel()
 	return lander->getZaccel();
 }
 
+bool Simulation::getParachute()
+{
+	return lander->getParachute();
+}
+
 unsigned int Simulation::getLanderTime()
 {
 	return lander->getTime();

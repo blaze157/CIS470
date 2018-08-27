@@ -77,6 +77,8 @@ public:
 	double getYaccel();
 	double getZaccel();
 
+	bool getParachute();
+
 	void flightController();
 
 	void update();

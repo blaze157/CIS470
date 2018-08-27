@@ -33,6 +33,8 @@ public:
 	double getYaccel();
 	double getZaccel();
 
+	bool getParachute();
+
 	unsigned int getLanderTime();
 
 	void update();

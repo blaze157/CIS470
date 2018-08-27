@@ -779,6 +779,10 @@ private: System::Void backgroundWorker1_ProgressChanged(System::Object^  sender,
 	txtate2->Text = "" + simulation->getThrust(1);
 	txtate3->Text = "" + simulation->getThrust(2);
 
+	if (simulation->getParachute())
+		txtpra->Text = "attached";
+	else
+		txtpra->Text = "detatched";
 
 	if(simulation->getLanded() == 1)
 		txtts->Text = "landed";

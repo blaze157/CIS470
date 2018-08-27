@@ -330,6 +330,11 @@ double Lander::getZaccel()
 	return accel;
 }
 
+bool Lander::getParachute()
+{
+	return stage == 0;
+}
+
 void Lander::fireThruster(int number, double force)
 {
 	if (number >= 17 && number <= 19)

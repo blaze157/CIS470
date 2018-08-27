@@ -439,7 +439,7 @@ void Lander::flightController()
 		if (throttle > 1)
 			throttle = 1;
 					
-		desiredQ = getVelocityQangle() + (pi / 2 - getVelocityQangle()) / (getVelocity()/20 + 1);
+		desiredQ = getVelocityQangle() + (pi / 2 - getVelocityQangle()) / (getVelocity()/40 + 1);
 
 		accuracy = sqrt(getVelocity())/100;
 
@@ -673,7 +673,7 @@ void Lander::update()
 		{
 			landed = 1;
 		}
-		if (groundForce > 3000 && landed == 0)
+		if ((groundForce > 3000 || getRangle() > pi / 2) && landed == 0)
 		{
 			landed = -1;
 		}
@@ -702,7 +702,7 @@ void Lander::update()
 		{
 			landed = 1;
 		}
-		if (groundForce > 3000 && landed == 0)
+		if ((groundForce > 3000 || getRangle() > pi / 2) && landed == 0)
 		{
 			landed = -1;
 		}
@@ -731,7 +731,7 @@ void Lander::update()
 		{
 			landed = 1;
 		}
-		if (groundForce > 3000 && landed == 0)
+		if ((groundForce > 3000 || getRangle() > pi/2) && landed == 0)
 		{
 			landed = -1;
 		}

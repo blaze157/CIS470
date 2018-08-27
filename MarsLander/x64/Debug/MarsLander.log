@@ -1,4 +1,10 @@
-﻿  CppCLR_WinformsProjekt.cpp
-  Form1.cpp
-  Generating Code...
+﻿  Lander.cpp
+Lander.cpp(472): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Lander.cpp(474): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Lander.cpp(488): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Lander.cpp(490): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Lander.cpp(525): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+Lander.cpp(536): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+Lander.cpp(589): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Lander.cpp(593): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
   MarsLander.vcxproj -> C:\Users\Kyle Booth\Source\Repos\CIS470\x64\Debug\MarsLander.exe

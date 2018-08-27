@@ -176,19 +176,24 @@ void Lander::setVelocity(double xvel, double yvel, double zvel)
 
 void Lander::sendData()
 {
+	std::cout << "position" << std::endl;
 	connector->execute(L"execute position_sp @longitude = N'" + std::to_wstring(getXpos())
+		+ L"', @latitude = N'" + std::to_wstring(getZpos())
 		+ L"', @londirection = N'" + ((getPangle() > 0) ? L"E" : L"W")
 		+ L"', @latdirection = N'" + ((getPangle() < pi/2 && getPangle() > -pi / 2) ? L"N" : L"S") + L"';");
 
+	std::cout << "movement" << std::endl;
 	connector->execute(L"execute movement_sp @xacceleration = N'" + std::to_wstring(getXaccel())
 		+ L"', @yacceleration = N'" + std::to_wstring(getYaccel()) + L"', @zacceleration = N'" + std::to_wstring(getZaccel())
-		+ L"', @velocity = N'" + std::to_wstring(getVelocity()) + L"', @logtime = N'" + std::to_wstring(time) + L"';");
+		+ L"', @velocity = N'" + std::to_wstring(getVelocity()) + L"', @logtime = N'" + std::to_wstring(time/1000) + L"';");
 
 	if (landed == 1)
 	{
+		std::cout << "weather" << std::endl;
 		connector->execute(L"execute weather_sp @windmph = N'" + std::to_wstring(0)//This would be somthing else but I didn't have time for wind
 			+ L"', @precipitation = N'" + std::to_wstring(0) + L"', @hummidity = N'" + std::to_wstring(0)//um we're on mars
 			+ L"', @duepoint = N'" + std::to_wstring(-1000) + L"', @temp = N'" + std::to_wstring((rand()%70)-85-35) + L"';");
+		std::cout << "soil" << std::endl;
 		connector->execute(L"execute soilsample_sp @soiltype = N'sand', @sampleweight = N'" + std::to_wstring(1) + L"', @color = N'orange"
 			+ L"', @composition = N'iron oxide';");
 	}

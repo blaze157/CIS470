@@ -1,3 +1,11 @@
-﻿  PhysicsUnitTest.cpp
+﻿  Lander.cpp
+..\MarsLander\Lander.cpp(467): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+..\MarsLander\Lander.cpp(469): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+..\MarsLander\Lander.cpp(483): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+..\MarsLander\Lander.cpp(485): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+..\MarsLander\Lander.cpp(520): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+..\MarsLander\Lander.cpp(531): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+..\MarsLander\Lander.cpp(584): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+..\MarsLander\Lander.cpp(588): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
   Lander.obj : /DEBUG:FASTLINK is not supported when managed code is present; restarting link with /DEBUG:FULL
   PhysicsUnitTest.vcxproj -> C:\Users\Kyle Booth\Source\Repos\CIS470\x64\Debug\PhysicsUnitTest.exe

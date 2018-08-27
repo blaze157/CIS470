@@ -1,11 +1,10 @@
 ﻿  Lander.cpp
-Lander.cpp(462): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-Lander.cpp(464): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-Lander.cpp(478): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-Lander.cpp(480): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-Lander.cpp(515): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-Lander.cpp(526): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-Lander.cpp(579): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-Lander.cpp(583): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-  .NETFramework,Version=v4.0.AssemblyAttributes.cpp
+Lander.cpp(467): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Lander.cpp(469): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Lander.cpp(483): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Lander.cpp(485): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Lander.cpp(520): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+Lander.cpp(531): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+Lander.cpp(584): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Lander.cpp(588): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
   MarsLander.vcxproj -> C:\Users\Kyle Booth\Source\Repos\CIS470\x64\Debug\MarsLander.exe
